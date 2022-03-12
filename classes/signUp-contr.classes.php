@@ -79,3 +79,4 @@ class SignUpContr extends SignUp {
         return true;
     }
 }
+?>

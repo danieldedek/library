@@ -30,3 +30,4 @@ class SignUp extends DatabaseHandler {
         $stmt = null;
     }
 }
+?>

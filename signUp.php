@@ -29,7 +29,7 @@ include "./header.php";
             <input type="password" name="passwordVerification" id="passwordVerification" class="input">
          </div>
          <div class="inputField">
-            <button type="submit" name="submit" class="button">Registrovat se </button>
+            <button type="submit" name="submit" class="button">Registrovat se</button>
          </div>
       </form>
    </div>
