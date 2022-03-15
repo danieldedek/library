@@ -10,6 +10,7 @@ class UserInfo extends DatabaseHandler {
         WHERE author.id_author = book_has_author.author_id_author
         AND book.id_book = book_has_author.book_id_book
         AND copy.publisher_id_publisher = borrowing.copy_id_copy
+        AND copy.publisher_id_publisher = publisher.id_publisher
         AND copy.book_id_book = book.id_book
         AND borrowing.user_id_user = ?;');
 
