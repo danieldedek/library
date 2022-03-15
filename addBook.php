@@ -4,11 +4,11 @@ include "./header.php";
 
 <div class="wrapper">
    <div class="title">
-      Přidání autora
+      Přidání knihy
    </div>
    <div class="form">
       <form method="POST">
-         <div class="inputField">
+      <div class="inputField">
             <label for="namesBeforeKey">Names before key:</label>
             <input type="text" name="namesBeforeKey" id="namesBeforeKey" class="input">
          </div>
@@ -29,13 +29,33 @@ include "./header.php";
             <input type="text" name="suffixToKey" id="suffixToKey" class="input">
          </div>
          <div class="inputField">
-            <button type="submit" name="submit" class="button">Přidat autora</button>
+            <label for="bookName">Název knihy:</label>
+            <input type="text" name="bookName" id="bookName" class="input">
+         </div>
+         <div class="inputField">
+            <label for="publicationDate">Rok vydání:</label>
+            <input type="text" name="publicationDate" id="publicationDate" class="input">
+         </div>
+         <div class="inputField">
+            <label for="ISBN">ISBN:</label>
+            <input type="text" name="ISBN" id="ISBN" class="input">
+         </div>
+         <div class="inputField">
+            <label for="imperfection">Závada:</label>
+            <input type="text" name="imperfection" id="imperfection" class="input">
+         </div>
+         <div class="inputField">
+            <label for="publisherName">Vydavatel:</label>
+            <input type="text" name="publisherName" id="publisherName" class="input">
+         </div>
+         <div class="inputField">
+            <button type="submit" name="submit" class="button">Knihu</button>
          </div>
       </form>
    </div>
 </div>
 
 <?php
-include "./includes/addAuthor.inc.php";
+include "./includes/addBook.inc.php";
 include "./footer.php";
 ?>

@@ -5,7 +5,7 @@ class UserInfo extends DatabaseHandler {
     protected function getBorrowedBooks($idUser) {
 
         $stmt = $this->connect()->prepare(
-        'SELECT copy.id_copy, author.names_before_key, author.key_name, book.name book, publisher.name, copy.publication_date, borrowing.from_date, borrowing.to_date, borrowing.extensiton_count
+        'SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, publisher.name, copy.publication_date, borrowing.from_date, borrowing.to_date, borrowing.extensiton_count
         FROM author, book, publisher, borrowing, copy, book_has_author
         WHERE author.id_author = book_has_author.author_id_author
         AND book.id_book = book_has_author.book_id_book
@@ -29,7 +29,7 @@ class UserInfo extends DatabaseHandler {
         $dbBorrowing = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo("<table>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
-            echo("<tr><td>" . $dbBorrowing[$i]["names_before_key"] . "</td><td>" . $dbBorrowing[$i]["key_name"] . "</td><td>" . $dbBorrowing[$i]["book"] . "</td><td>" . $dbBorrowing[$i]["name"] . "</td><td>" . $dbBorrowing[$i]["publication_date"] . "</td><td>" . $dbBorrowing[$i]["from_date"] . "</td><td>" . $dbBorrowing[$i]["to_date"] . "</td><td>" . $dbBorrowing[$i]["extensiton_count"] . "</td></tr>");
+            echo("<tr><td>" . $dbBorrowing[$i]["names_before_key"] . "</td><td>" . $dbBorrowing[$i]["prefix_to_key"] . "</td><td>" . $dbBorrowing[$i]["key_name"] . "</td><td>" . $dbBorrowing[$i]["names_after_key"] . "</td><td>" . $dbBorrowing[$i]["suffix_to_key"] . "</td><td>" . $dbBorrowing[$i]["book"] . "</td><td>" . $dbBorrowing[$i]["name"] . "</td><td>" . $dbBorrowing[$i]["publication_date"] . "</td><td>" . $dbBorrowing[$i]["from_date"] . "</td><td>" . $dbBorrowing[$i]["to_date"] . "</td><td>" . $dbBorrowing[$i]["extensiton_count"] . "</td></tr>");
         }
         echo("</table>");
     }
