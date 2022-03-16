@@ -186,6 +186,8 @@ class AddBook extends DatabaseHandler {
     }
 
     protected function setBook($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName) {
+        $wrongInputs = array();
+
         $stmt = $this->connect()->prepare('SELECT id_author FROM author WHERE names_before_key = ? AND prefix_to_key = ? AND key_name = ? AND names_after_key = ? AND suffix_to_key = ?;');
 
         if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey))) {
@@ -194,8 +196,14 @@ class AddBook extends DatabaseHandler {
             exit();
         }
 
-        $dbAuthor = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $idAuthor = $dbAuthor[0]["id_author"];
+        if($stmt->rowCount() > 0) {
+            $dbAuthor = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $idAuthor = $dbAuthor[0]["id_author"];
+        }
+
+        else {
+            array_push($wrongInputs, "Tento autor není v databázi");
+        }
 
         $stmt = $this->connect()->prepare('SELECT id_book FROM book WHERE name = ?;');
 
@@ -241,8 +249,42 @@ class AddBook extends DatabaseHandler {
             exit();
         }
 
-        $dbPublisher = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $idPublisher = $dbPublisher[0]["id_publisher"];
+        if($stmt->rowCount() > 0) {
+            $dbPublisher = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $idPublisher = $dbPublisher[0]["id_publisher"];
+        }
+
+        else {
+            array_push($wrongInputs, "Tento vydavatel není v databázi");
+        }
+
+        if(!is_null($imperfection)) {
+            $stmt = $this->connect()->prepare('SELECT id_imperfection FROM imperfection WHERE name = ?;');
+
+            if(!$stmt->execute(array($imperfection))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                exit();
+            }
+
+            if($stmt->rowCount() > 0) {
+                $dbImperfection = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $idImperfection = $dbImperfection[0]["id_imperfection"];
+            }
+
+            else {
+                array_push($wrongInputs, "Tato závada není v databázi");
+            }
+        }
+
+        if(!empty($wrongInputs)) {
+            echo '<div class="wrapper">';
+            foreach($wrongInputs as $wrongInput) {
+                echo "<p>" . $wrongInput . "</p>";
+            }
+            echo "</div>";
+            exit();
+        }
 
         $stmt = $this->connect()->prepare('SELECT book_id_book, author_id_author FROM book_has_author WHERE book_id_book = ? AND author_id_author = ?;');
 
@@ -271,17 +313,6 @@ class AddBook extends DatabaseHandler {
         }
 
         if(!is_null($imperfection)) {
-            $stmt = $this->connect()->prepare('SELECT id_imperfection FROM imperfection WHERE name = ?;');
-
-            if(!$stmt->execute(array($imperfection))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-
-            $dbImperfection = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $idImperfection = $dbImperfection[0]["id_imperfection"];
-
             $stmt = $this->connect()->prepare('SELECT id_copy FROM copy WHERE publication_date = ? AND ISBN = ? AND publisher_id_publisher = ? AND book_id_book = ?;');
 
             if(!$stmt->execute(array($publicationDate, $ISBN, $idPublisher, $idBook))) {
