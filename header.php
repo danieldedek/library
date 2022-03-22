@@ -22,13 +22,13 @@ include "./classes/user.php";
                 if(isset($_SESSION["user"])) {
                 ?>
                 <li><p><?php echo unserialize($_SESSION['user'])->getMail(); ?></p></li>
-                <li><a href=includes/logOut.inc.php>LogOut</a></li>
+                <li><a href=includes/logOut.inc.php>Log Out</a></li>
                 <?php
                 }
                 else {
                 ?>
-                <li><a href=signUp.php>SignUp</a></li>
-                <li><a href=logIn.php>LogIn</a></li>
+                <li><a href=signUp.php>Sign Up</a></li>
+                <li><a href=logIn.php>Log In</a></li>
                 <?php
                 }
                 ?>

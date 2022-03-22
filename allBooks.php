@@ -6,7 +6,6 @@ include "./header.php";
    <div class="title">
       Všechny knihy
    </div>
-</div>
 
 <?php
 include "./includes/allBooks.inc.php";

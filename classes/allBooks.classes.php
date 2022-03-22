@@ -15,8 +15,8 @@ class AllBooks extends DatabaseHandler {
         ON copy.book_id_book = book.id_book
         INNER JOIN publisher
         ON copy.publisher_id_publisher = publisher.id_publisher
-        INNER JOIN borrowing
-        ON copy.publisher_id_publisher = borrowing.copy_id_copy
+        LEFT JOIN borrowing
+        ON copy.id_copy = borrowing.copy_id_copy
         LEFT JOIN to_repair
         ON to_repair.copy_id_copy = copy.id_copy
         LEFT JOIN imperfection
@@ -34,12 +34,63 @@ class AllBooks extends DatabaseHandler {
             return;
         }
 
+        $books = array();
+
         $dbAllBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo("<table>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
-            echo("<tr><td>" . $dbAllBooks[$i]["names_before_key"] . "</td><td>" . $dbAllBooks[$i]["prefix_to_key"] . "</td><td>" . $dbAllBooks[$i]["key_name"] . "</td><td>" . $dbAllBooks[$i]["names_after_key"] . "</td><td>" . $dbAllBooks[$i]["suffix_to_key"] . "</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["name"] . "</td><td>" . $dbAllBooks[$i]["publication_date"] . "</td><td>" . $dbAllBooks[$i]["from_date"] . "</td><td>" . $dbAllBooks[$i]["to_date"] . "</td><td>" . $dbAllBooks[$i]["imperfection"] . "</td></tr>");
+            array_push($books, $dbAllBooks[$i]["id_copy"]);
+            echo("<tr><td>" . $dbAllBooks[$i]["names_before_key"] . "</td><td>" . $dbAllBooks[$i]["prefix_to_key"] . "</td><td>" . $dbAllBooks[$i]["key_name"] . "</td><td>" . $dbAllBooks[$i]["names_after_key"] . "</td><td>" . $dbAllBooks[$i]["suffix_to_key"] . "</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["name"] . "</td><td>" . $dbAllBooks[$i]["publication_date"] . "</td><td>" . $dbAllBooks[$i]["imperfection"]);
+            if($this->isBorrowed($dbAllBooks[$i]["id_copy"]))
+                echo("</td><td>" . $dbAllBooks[$i]["to_date"] . "</td></tr>");
+            else
+                echo('</td><td><form method="POST"><button type="submit" name="rowButton" class="button" value="'.$i.'">Vypůjčit</button></form>' . "</td></tr>");
+
         }
-        echo("</table>");
+        echo("</table></div>");
+
+        $stmt = null;
+        
+        if(isset($_POST["rowButton"])) {
+
+            $idCopy = $books[$_POST["rowButton"]];
+            $idUser = unserialize($_SESSION['user'])->getIdUser();
+        
+            $stmt = $this->connect()->prepare('INSERT INTO borrowing(user_id_user, copy_id_copy, from_date, to_date, extension_count) VALUES(?, ?, NOW(), NOW() + INTERVAL 1 MONTH, ?);');
+        
+            if(!$stmt->execute(array($idUser, $idCopy, '0'))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $stmt = null;
+            
+            header("Refresh:0");
+
+        }
+    }
+
+    private function isBorrowed($idCopy) {
+
+        $stmt = $this->connect()->prepare(
+        'SELECT copy_id_copy
+        FROM borrowing
+        WHERE copy_id_copy = ?;');
+
+        if(!$stmt->execute(array($idCopy))) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
+            return;
+        }
+
+        if($stmt->rowCount() == 0) {
+            $stmt = null;
+            return false;
+        }
+
+        $stmt = null;
+        return true;
     }
 }
 ?>
