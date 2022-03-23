@@ -7,11 +7,17 @@ include "./header.php";
       Informace
    </div>
    <?php
-   echo "<p>" . unserialize($_SESSION['user'])->getFirstName() . "</p>";
-   echo "<p>" . unserialize($_SESSION['user'])->getKeyName() . "</p>";
-   echo "<p>" . unserialize($_SESSION['user'])->getMail() . "</p>";
-   echo "<p>" . unserialize($_SESSION['user'])->getSendMail() . "</p>";
+   if(isset($_SESSION['user'])) {
+      echo "<p>" . unserialize($_SESSION['user'])->getFirstName() . "</p>";
+      echo "<p>" . unserialize($_SESSION['user'])->getKeyName() . "</p>";
+      echo "<p>" . unserialize($_SESSION['user'])->getMail() . "</p>";
+      echo "<p>" . unserialize($_SESSION['user'])->getSendMail() . "</p>";
 
-include "./includes/userInfo.inc.php";
+      include "./includes/userInfo.inc.php";
+   }
+
+   else
+      echo "<p>Přihlašte se prosím</p>";
+
 include "./footer.php";
 ?>

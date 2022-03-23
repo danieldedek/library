@@ -17,18 +17,39 @@ include "./classes/user.php";
         </a>
         <nav>
             <ul>
-                <li><a href=index.php>Home</a></li>
+                <li>
+                    <div class="dropdown">
+                        <button class="dropbtn">Přidání</button>
+                        <div class="dropdown-content">
+                            <a href=addAuthor.php>Přidat autora</a>
+                            <a href=addBook.php>Přidat knihu</a>
+                            <a href=addImperfection.php>Přidat závadu</a>
+                            <a href=addPublisher.php>Přidat vydavatele</a>
+                            <a href=addUser.php>Přidat uživatele</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="dropdown">
+                        <button class="dropbtn">Výpis</button>
+                        <div class="dropdown-content">
+                            <a href=allBooks.php>Všechny knihy</a>
+                            <a href=userInfo.php>Info</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href=index.php>Domovská stránka</a></li>
                 <?php
                 if(isset($_SESSION["user"])) {
                 ?>
                 <li><p><?php echo unserialize($_SESSION['user'])->getMail(); ?></p></li>
-                <li><a href=includes/logOut.inc.php>Log Out</a></li>
+                <li><a href=includes/logOut.inc.php>Odhlásit se</a></li>
                 <?php
                 }
                 else {
                 ?>
-                <li><a href=signUp.php>Sign Up</a></li>
-                <li><a href=logIn.php>Log In</a></li>
+                <li><a href=signUp.php>Registrovat se</a></li>
+                <li><a href=logIn.php>Přihlásit se</a></li>
                 <?php
                 }
                 ?>
