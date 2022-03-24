@@ -49,7 +49,7 @@ include "./header.php";
             <input type="text" name="publisherName" id="publisherName" class="input">
          </div>
          <div class="inputField">
-            <button type="submit" name="submit" class="button">Knihu</button>
+            <button type="submit" name="submit" class="button">Přidat knihu</button>
          </div>
       </form>
    </div>

@@ -38,27 +38,86 @@ class AllBooks extends DatabaseHandler {
 
         $dbAllBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo("<table>");
+        echo("<tr><th>names_before_key</th><th>prefix_to_key</th><th>key_name</th><th>names_after_key</th><th>suffix_to_key</th><th>Název knihy</th><th>Vydavatelství</th><th>Rok vydání</th><th>Závada</th></tr>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($books, $dbAllBooks[$i]["id_copy"]);
             echo("<tr><td>" . $dbAllBooks[$i]["names_before_key"] . "</td><td>" . $dbAllBooks[$i]["prefix_to_key"] . "</td><td>" . $dbAllBooks[$i]["key_name"] . "</td><td>" . $dbAllBooks[$i]["names_after_key"] . "</td><td>" . $dbAllBooks[$i]["suffix_to_key"] . "</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["name"] . "</td><td>" . $dbAllBooks[$i]["publication_date"] . "</td><td>" . $dbAllBooks[$i]["imperfection"]);
             if($this->isBorrowed($dbAllBooks[$i]["id_copy"]))
-                echo("</td><td>" . $dbAllBooks[$i]["to_date"] . "</td></tr>");
+                echo("</td><td>" . $dbAllBooks[$i]["to_date"] . '</td><td><form method="POST"><button type="submit" name="returnButton" class="button" value="'.$i.'">Vrátit</button></form>');
             else
-                echo('</td><td><form method="POST"><button type="submit" name="rowButton" class="button" value="'.$i.'">Vypůjčit</button></form>' . "</td></tr>");
-
+                echo('</td><td><form method="POST"><button type="submit" name="borrowButton" class="button" value="'.$i.'">Vypůjčit</button></form>');
+            echo('</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td><td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
         }
         echo("</table></div>");
 
         $stmt = null;
         
-        if(isset($_POST["rowButton"])) {
+        if(isset($_POST["borrowButton"])) {
 
-            $idCopy = $books[$_POST["rowButton"]];
+            $idCopy = $books[$_POST["borrowButton"]];
             $idUser = unserialize($_SESSION['user'])->getIdUser();
         
             $stmt = $this->connect()->prepare('INSERT INTO borrowing(user_id_user, copy_id_copy, from_date, to_date, extension_count) VALUES(?, ?, NOW(), NOW() + INTERVAL 1 MONTH, ?);');
         
             if(!$stmt->execute(array($idUser, $idCopy, '0'))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $stmt = null;
+            
+            header("Refresh:0");
+
+        }
+
+        if(isset($_POST["returnButton"])) {
+
+            $idCopy = $books[$_POST["returnButton"]];
+        
+            $stmt = $this->connect()->prepare('DELETE FROM borrowing WHERE copy_id_copy = ?;');
+        
+            if(!$stmt->execute(array($idCopy))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $stmt = null;
+            
+            header("Refresh:0");
+
+        }
+
+        if(isset($_POST["deleteButton"])) {
+
+            $idCopy = $books[$_POST["deleteButton"]];
+
+            if($this->isBorrowed($idCopy)) {
+                $stmt = $this->connect()->prepare('DELETE FROM borrowing WHERE copy_id_copy = ?;');
+        
+                if(!$stmt->execute(array($idCopy))) {
+                    $stmt = null;
+                    echo '<div class="wrapper"><p>stmt failed</p></div>';
+                    return;
+                }
+
+                $stmt = null;
+            }
+
+            $stmt = $this->connect()->prepare('DELETE FROM to_repair WHERE copy_id_copy = ?;');
+        
+            if(!$stmt->execute(array($idCopy))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $stmt = null;
+        
+            $stmt = $this->connect()->prepare('DELETE FROM copy WHERE id_copy = ?;');
+        
+            if(!$stmt->execute(array($idCopy))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 return;

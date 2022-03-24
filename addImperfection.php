@@ -4,7 +4,7 @@ include "./header.php";
 
 <div class="wrapper">
    <div class="title">
-      Přidání poškození
+      Přidání závady
    </div>
    <div class="form">
       <form method="POST">
@@ -13,7 +13,7 @@ include "./header.php";
             <input type="text" name="imperfection" id="imperfection" class="input">
          </div>
          <div class="inputField">
-            <button type="submit" name="submit" class="button">Přidat vydavatele</button>
+            <button type="submit" name="submit" class="button">Přidat závadu</button>
          </div>
       </form>
    </div>

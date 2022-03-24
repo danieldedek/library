@@ -33,8 +33,11 @@ include "./classes/user.php";
                     <div class="dropdown">
                         <button class="dropbtn">Výpis</button>
                         <div class="dropdown-content">
+                            <a href=allAuthors.php>Všichni autoři</a>
                             <a href=allBooks.php>Všechny knihy</a>
-                            <a href=userInfo.php>Info</a>
+                            <a href=allImperfections.php>Všechny závady</a>
+                            <a href=allPublishers.php>Všichni vydavatelé</a>
+                            <a href=allUsers.php>Všichni uživatelé</a>
                         </div>
                     </div>
                 </li>
@@ -42,7 +45,7 @@ include "./classes/user.php";
                 <?php
                 if(isset($_SESSION["user"])) {
                 ?>
-                <li><p><?php echo unserialize($_SESSION['user'])->getMail(); ?></p></li>
+                <li><a href=userInfo.php><?php echo unserialize($_SESSION['user'])->getMail(); ?></a></li>
                 <li><a href=includes/logOut.inc.php>Odhlásit se</a></li>
                 <?php
                 }
