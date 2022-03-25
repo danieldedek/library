@@ -40,7 +40,7 @@ class AddUserContr extends AddUser {
             return;
         }
         $this->setUser($this->firstName, $this->keyName, $this->mail, $this->password, $this->role);
-        echo '<div class="wrapper"><p>Registrace proběhla úspěšně</p></div>';
+        echo '<div class="wrapper"><p>Přidání uživatele proběhlo úspěšně</p></div>';
     }
 
     private function invalidFirstName() {

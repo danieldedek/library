@@ -8,37 +8,25 @@ include "./header.php";
    </div>
    <div class="form">
       <form method="POST">
-      <div class="inputField">
-            <label for="namesBeforeKey">Names before key:</label>
-            <input type="text" name="namesBeforeKey" id="namesBeforeKey" class="input">
-         </div>
          <div class="inputField">
-            <label for="prefixToKey">Prefix to key:</label>
-            <input type="text" name="prefixToKey" id="prefixToKey" class="input">
-         </div>
-         <div class="inputField">
-            <label for="keyName">Key name:</label>
-            <input type="text" name="keyName" id="keyName" class="input">
-         </div>
-         <div class="inputField">
-            <label for="namesAfterKey">Names after key:</label>
-            <input type="text" name="namesAfterKey" id="namesAfterKey" class="input">
-         </div>
-         <div class="inputField">
-            <label for="suffixToKey">Suffix to key:</label>
-            <input type="text" name="suffixToKey" id="suffixToKey" class="input">
+            <label for="authorName">Jméno autora:</label>
+            <input type="text" name="authorName" id="authorName" class="input">
          </div>
          <div class="inputField">
             <label for="bookName">Název knihy:</label>
             <input type="text" name="bookName" id="bookName" class="input">
          </div>
          <div class="inputField">
-            <label for="publicationDate">Rok vydání:</label>
-            <input type="text" name="publicationDate" id="publicationDate" class="input">
+            <label for="publicationYear">Rok vydání:</label>
+            <input type="text" name="publicationYear" id="publicationYear" class="input">
          </div>
          <div class="inputField">
             <label for="ISBN">ISBN:</label>
             <input type="text" name="ISBN" id="ISBN" class="input">
+         </div>
+         <div class="inputField">
+            <label for="registrationNumber">Registrační číslo:</label>
+            <input type="text" name="registrationNumber" id="registrationNumber" class="input">
          </div>
          <div class="inputField">
             <label for="imperfection">Závada:</label>

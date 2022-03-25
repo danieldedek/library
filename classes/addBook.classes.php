@@ -2,166 +2,12 @@
 
 class AddBook extends DatabaseHandler {
 
-    protected function checkBook($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName) {
-        if (is_null($prefixToKey) && is_null($namesAfterKey) && is_null($suffixToKey) && is_null($imperfection)) {
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
+    protected function checkBook($authorName, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfection, $publisherName) {
+        if(is_null($imperfection)){
+            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.name author, book.name book, copy.publication_year, copy.ISBN, copy.registration_number, imperfection.name imperfection, publisher.name publisher
             FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $bookName, $publicationDate, $ISBN, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($prefixToKey) && is_null($namesAfterKey) && is_null($suffixToKey)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($prefixToKey) && is_null($namesAfterKey) && is_null($imperfection)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $suffixToKey, $bookName, $publicationDate, $ISBN, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($prefixToKey) && is_null($suffixToKey) && is_null($imperfection)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $namesAfterKey, $bookName, $publicationDate, $ISBN, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($namesAfterKey) && is_null($suffixToKey) && is_null($imperfection)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $bookName, $publicationDate, $ISBN, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($prefixToKey) && is_null($namesAfterKey)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($prefixToKey) && is_null($suffixToKey)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $namesAfterKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($prefixToKey) && is_null($imperfection)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($namesAfterKey) && is_null($suffixToKey)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($namesAfterKey) && is_null($imperfection)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $suffixToKey, $bookName, $publicationDate, $ISBN, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($suffixToKey) && is_null($imperfection)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $bookName, $publicationDate, $ISBN, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($prefixToKey)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key IS NULL AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($namesAfterKey)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key IS NULL AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($suffixToKey)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key IS NULL AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                exit();
-            }
-        }
-
-        else if(is_null($imperfection)){
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
-            FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name IS NULL AND publisher.name = ?;');
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $publisherName))) {
+            WHERE author.name = ? AND book.name = ? AND copy.publication_year = ? AND copy.ISBN = ? AND copy.registration_number = ? AND imperfection.name IS NULL AND publisher.name = ?;');
+            if(!$stmt->execute(array($authorName, $bookName, $publicationYear, $ISBN, $registrationNumber, $publisherName))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -169,11 +15,11 @@ class AddBook extends DatabaseHandler {
         }
 
         else {
-            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.names_before_key, author.prefix_to_key, author.key_name, author.names_after_key, author.suffix_to_key, book.name book, copy.publication_date, copy.ISBN, imperfection.name imperfection, publisher.name
+            $stmt = $this->connect()->prepare('SELECT copy.id_copy, author.name author, book.name book, copy.publication_year, copy.ISBN, copy.registration_number, imperfection.name imperfection, publisher.name publisher
             FROM author, book, publisher, copy, book_has_author, imperfection, to_repair
-            WHERE author.names_before_key = ? AND author.prefix_to_key = ? AND author.key_name = ? AND author.names_after_key = ? AND author.suffix_to_key = ? AND book.name = ? AND copy.publication_date = ? AND copy.ISBN = ? AND imperfection.name = ? AND publisher.name = ?;');
+            WHERE author.name = ? AND book.name = ? AND copy.publication_year = ? AND copy.ISBN = ? AND copy.registration_number = ? AND imperfection.name = ? AND publisher.name = ?;');
 
-            if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName))) {
+            if(!$stmt->execute(array($authorName, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfection, $publisherName))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -185,12 +31,12 @@ class AddBook extends DatabaseHandler {
         return true;
     }
 
-    protected function setBook($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName) {
+    protected function setBook($authorName, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfection, $publisherName) {
         $wrongInputs = array();
 
-        $stmt = $this->connect()->prepare('SELECT id_author FROM author WHERE names_before_key = ? AND prefix_to_key = ? AND key_name = ? AND names_after_key = ? AND suffix_to_key = ?;');
+        $stmt = $this->connect()->prepare('SELECT id_author FROM author WHERE name = ?;');
 
-        if(!$stmt->execute(array($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey))) {
+        if(!$stmt->execute(array($authorName))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
@@ -304,18 +150,18 @@ class AddBook extends DatabaseHandler {
             }
         }
 
-        $stmt = $this->connect()->prepare('INSERT INTO copy(publication_date, ISBN, publisher_id_publisher, book_id_book) VALUES(?, ?, ?, ?);');
+        $stmt = $this->connect()->prepare('INSERT INTO copy(publication_year, ISBN, registration_number, publisher_id_publisher, book_id_book) VALUES(?, ?, ?, ?, ?);');
 
-        if(!$stmt->execute(array($publicationDate, $ISBN, $idPublisher, $idBook))) {
+        if(!$stmt->execute(array($publicationYear, $ISBN, $registrationNumber, $idPublisher, $idBook))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
         }
 
         if(!is_null($imperfection)) {
-            $stmt = $this->connect()->prepare('SELECT id_copy FROM copy WHERE publication_date = ? AND ISBN = ? AND publisher_id_publisher = ? AND book_id_book = ?;');
+            $stmt = $this->connect()->prepare('SELECT id_copy FROM copy WHERE publication_year = ? AND ISBN = ? AND registration_number = ? AND publisher_id_publisher = ? AND book_id_book = ?;');
 
-            if(!$stmt->execute(array($publicationDate, $ISBN, $idPublisher, $idBook))) {
+            if(!$stmt->execute(array($publicationYear, $ISBN, $registrationNumber, $idPublisher, $idBook))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -324,7 +170,7 @@ class AddBook extends DatabaseHandler {
             $dbCopy = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $idCopy = $dbCopy[0]["id_copy"];
 
-            $stmt = $this->connect()->prepare('INSERT INTO to_repair(copy_id_copy, imperfection_id_imperfection, date) VALUES(?, ?, ?);');
+            $stmt = $this->connect()->prepare('INSERT INTO to_repair(copy_id_copy, imperfection_id_imperfection, damaged_date) VALUES(?, ?, ?);');
 
             if(!$stmt->execute(array($idCopy, $idImperfection, date("Y-m-d")))) {
                 $stmt = null;

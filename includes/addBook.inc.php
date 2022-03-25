@@ -2,14 +2,11 @@
 
 if(isset($_POST["submit"])) {
 
-   $namesBeforeKey = htmlspecialchars($_POST["namesBeforeKey"]);
-   $prefixToKey = htmlspecialchars($_POST["prefixToKey"]);
-   $keyName = htmlspecialchars($_POST["keyName"]);
-   $namesAfterKey = htmlspecialchars($_POST["namesAfterKey"]);
-   $suffixToKey = htmlspecialchars($_POST["suffixToKey"]);
+   $authorName = htmlspecialchars($_POST["authorName"]);
    $bookName = htmlspecialchars($_POST["bookName"]);
-   $publicationDate = htmlspecialchars($_POST["publicationDate"]);
+   $publicationYear = htmlspecialchars($_POST["publicationYear"]);
    $ISBN = htmlspecialchars($_POST["ISBN"]);
+   $registrationNumber = htmlspecialchars($_POST["registrationNumber"]);
    $imperfection = htmlspecialchars($_POST["imperfection"]);
    $publisherName = htmlspecialchars($_POST["publisherName"]);
 
@@ -18,7 +15,7 @@ if(isset($_POST["submit"])) {
    include "./classes/addBook.classes.php";
    include "./classes/addBook-contr.classes.php";
 
-   $addBook = new AddBookContr($namesBeforeKey, $prefixToKey, $keyName, $namesAfterKey, $suffixToKey, $bookName, $publicationDate, $ISBN, $imperfection, $publisherName);
+   $addBook = new AddBookContr($authorName, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfection, $publisherName);
 
    $addBook->addBook();
 }
