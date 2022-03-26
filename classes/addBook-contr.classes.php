@@ -39,6 +39,10 @@ class AddBookContr extends AddBook {
             array_push($this->wrongInputs, "Jméno vydavatele musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
         if($this->bookAlreadyAdded() == false)
             array_push($this->wrongInputs, "Tato kniha již je v databázi");
+        if($this->ISBNAlreadyExists() == false)
+            array_push($this->wrongInputs, "Kniha s tímto ISBN již je v databázi");
+        if($this->registrationNumberAlreadyExists() == false)
+            array_push($this->wrongInputs, "Kniha s tímto registračním číslem již je v databázi");
         if(!empty($this->wrongInputs)) {
             echo '<div class="wrapper">';
             foreach($this->wrongInputs as $wrongInput) {
@@ -99,6 +103,18 @@ class AddBookContr extends AddBook {
 
     private function bookAlreadyAdded() {
         if(!$this->checkBook($this->authorName, $this->bookName, $this->publicationYear, $this->ISBN, $this->registrationNumber, $this->imperfection, $this->publisherName))
+            return false;
+        return true;
+    }
+
+    private function ISBNAlreadyExists() {
+        if(!$this->checkISBN($this->ISBN))
+            return false;
+        return true;
+    }
+
+    private function registrationNumberAlreadyExists() {
+        if(!$this->checkRegistrationNumber($this->registrationNumber))
             return false;
         return true;
     }

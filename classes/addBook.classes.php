@@ -31,6 +31,32 @@ class AddBook extends DatabaseHandler {
         return true;
     }
 
+    protected function checkISBN($ISBN) {
+        $stmt = $this->connect()->prepare('SELECT copy.ISBN FROM copy WHERE copy.ISBN = ?;');
+        if(!$stmt->execute(array($ISBN))) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
+            exit();
+        }
+
+        if($stmt->rowCount() > 0)
+            return false;
+        return true;
+    }
+
+    protected function checkRegistrationNumber($registrationNumber) {
+        $stmt = $this->connect()->prepare('SELECT copy.registration_number FROM copy WHERE copy.registration_number = ?;');
+        if(!$stmt->execute(array($registrationNumber))) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
+            exit();
+        }
+
+        if($stmt->rowCount() > 0)
+            return false;
+        return true;
+    }
+
     protected function setBook($authorName, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfection, $publisherName) {
         $wrongInputs = array();
 

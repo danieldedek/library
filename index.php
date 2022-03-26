@@ -1,6 +1,12 @@
 <?php
-session_start();
-include "./classes/user.php";
-$user = unserialize($_SESSION['user']);
-echo '<p>' . $user->getIdUser() . '</p>';
+include "./header.php";
+?>
+
+<div class="wrapper">
+   <div class="title">
+      Domovská stránka
+   </div>
+</div>
+<?php
+include "./footer.php";
 ?>

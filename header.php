@@ -17,6 +17,10 @@ include "./classes/user.php";
         </a>
         <nav>
             <ul>
+                <?php
+                if(isset($_SESSION['user'])) {
+                    if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
+                ?>
                 <li>
                     <div class="dropdown">
                         <button class="dropbtn">Přidání</button>
@@ -25,19 +29,41 @@ include "./classes/user.php";
                             <a href=addBook.php>Přidat knihu</a>
                             <a href=addImperfection.php>Přidat závadu</a>
                             <a href=addPublisher.php>Přidat vydavatele</a>
+                            <?php
+
+                            if(unserialize($_SESSION['user'])->getRole() == 3) {
+                            ?>
+
                             <a href=addUser.php>Přidat uživatele</a>
                         </div>
                     </div>
                 </li>
+                <?php
+                    }
+                }
+                ?>
                 <li>
                     <div class="dropdown">
                         <button class="dropbtn">Výpis</button>
                         <div class="dropdown-content">
+                        <?php
+                        if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
+                        ?>
                             <a href=allAuthors.php>Všichni autoři</a>
+                            <?php
+                            }
+                            ?>
                             <a href=allBooks.php>Všechny knihy</a>
+                            <?php
+                            if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
+                            ?>
                             <a href=allImperfections.php>Všechny závady</a>
                             <a href=allPublishers.php>Všichni vydavatelé</a>
                             <a href=allUsers.php>Všichni uživatelé</a>
+                            <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                 </li>

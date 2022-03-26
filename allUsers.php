@@ -6,8 +6,14 @@ include "./header.php";
    <div class="title">
       Všichni uživatelé
    </div>
+   <?php
+   if(isset($_SESSION['user'])) {
+      if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
+         include "./includes/allUsers.inc.php";
+      }
+   }
+   else
+      echo "<p>Pro zobrazení obsahu této stránky se musíte přihlásit a mít dostatečná oprávnění</p>";
 
-<?php
-include "./includes/allUsers.inc.php";
 include "./footer.php";
 ?>

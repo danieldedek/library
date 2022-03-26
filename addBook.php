@@ -6,6 +6,10 @@ include "./header.php";
    <div class="title">
       Přidání knihy
    </div>
+   <?php
+   if(isset($_SESSION['user'])) {
+      if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
+   ?>
    <div class="form">
       <form method="POST">
          <div class="inputField">
@@ -41,6 +45,12 @@ include "./header.php";
          </div>
       </form>
    </div>
+   <?php
+      }
+   }
+   else
+      echo "<p>Pro zobrazení obsahu této stránky se musíte přihlásit a mít dostatečná oprávnění</p>";
+   ?>
 </div>
 
 <?php
