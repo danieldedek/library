@@ -5,7 +5,7 @@ class AllBooks extends DatabaseHandler {
     protected function getAllBooks() {
 
         $stmt = $this->connect()->prepare(
-        'SELECT copy.id_copy, author.name author, book.name book, publisher.name publisher, copy.publication_year, borrowing.from_date, borrowing.to_date, imperfection.name imperfection
+        'SELECT copy.id_copy, author.name author, book.name book, publisher.name publisher, copy.publication_year, borrowing.from_date, borrowing.to_date, imperfection.name imperfection, copy.ISBN, copy.registration_number
         FROM author
         INNER JOIN book_has_author
         ON author.id_author = book_has_author.author_id_author
@@ -41,7 +41,7 @@ class AllBooks extends DatabaseHandler {
         echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>Vydavatelství</th><th>Rok vydání</th><th>Závada</th></tr>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($books, $dbAllBooks[$i]["id_copy"]);
-            echo("<tr><td>" . $dbAllBooks[$i]["author"] . "</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["publisher"] . "</td><td>" . $dbAllBooks[$i]["publication_year"] . "</td><td>" . $dbAllBooks[$i]["imperfection"]);
+            echo("<tr><td>" . $dbAllBooks[$i]["author"] . "</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["publisher"] . "</td><td>" . $dbAllBooks[$i]["publication_year"] . "</td><td>" . $dbAllBooks[$i]["ISBN"] . "</td><td>" . $dbAllBooks[$i]["registration_number"] . "</td><td>" . $dbAllBooks[$i]["imperfection"]);
             if($this->isBorrowed($dbAllBooks[$i]["id_copy"]))
                 echo("</td><td>" . $dbAllBooks[$i]["to_date"] . '</td><td><form method="POST"><button type="submit" name="returnButton" class="button" value="'.$i.'">Vrátit</button></form>');
             else
@@ -114,6 +114,8 @@ class AllBooks extends DatabaseHandler {
             }
 
             $stmt = null;
+
+            $idBook = $this->getIdBook($idCopy);
         
             $stmt = $this->connect()->prepare('DELETE FROM copy WHERE id_copy = ?;');
         
@@ -124,6 +126,28 @@ class AllBooks extends DatabaseHandler {
             }
 
             $stmt = null;
+
+            if(!$this->isUsed($idBook)) {
+                $stmt = $this->connect()->prepare('DELETE FROM book_has_author WHERE book_id_book = ?;');
+        
+                if(!$stmt->execute(array($idBook))) {
+                    $stmt = null;
+                    echo '<div class="wrapper"><p>stmt failed</p></div>';
+                    return;
+                }
+
+                $stmt = null;
+
+                $stmt = $this->connect()->prepare('DELETE FROM book WHERE id_book = ?;');
+        
+                if(!$stmt->execute(array($idBook))) {
+                    $stmt = null;
+                    echo '<div class="wrapper"><p>stmt failed</p></div>';
+                    return;
+                }
+
+                $stmt = null;
+            }
             
             header("Refresh:0");
 
@@ -150,6 +174,49 @@ class AllBooks extends DatabaseHandler {
 
         $stmt = null;
         return true;
+    }
+
+    private function isUsed($idBook) {
+
+        $stmt = $this->connect()->prepare(
+        'SELECT id_copy, book_id_book
+        FROM copy
+        WHERE book_id_book = ?;');
+
+        if(!$stmt->execute(array($idBook))) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
+            return;
+        }
+
+        if($stmt->rowCount() == 0) {
+            $stmt = null;
+            return false;
+        }
+
+        $stmt = null;
+        return true;
+    }
+
+    private function getIdBook($idCopy) {
+
+        $stmt = $this->connect()->prepare(
+        'SELECT book_id_book
+        FROM copy
+        WHERE id_copy = ?;');
+
+        if(!$stmt->execute(array($idCopy))) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
+            return;
+        }
+
+        $dbBook = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $idBook = $dbBook[0]["book_id_book"];
+
+        $stmt = null;
+
+        return $idBook;
     }
 }
 ?>

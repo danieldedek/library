@@ -26,7 +26,11 @@ class AllImperfections extends DatabaseHandler {
         echo("<tr><th>Závada</th></tr>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($imperfections, $dbAllImperfections[$i]["id_imperfection"]);
-            echo("<tr><td>" . $dbAllImperfections[$i]["name"] . '</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td><td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
+            echo("<tr><td>" . $dbAllImperfections[$i]["name"] . '</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td>');
+            if($this->isUsed($dbAllImperfections[$i]["id_imperfection"]))
+                echo('</tr>');
+            else
+                echo('<td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
         }
         echo("</table></div>");
 
@@ -49,6 +53,24 @@ class AllImperfections extends DatabaseHandler {
             header("Refresh:0");
 
         }
+    }
+
+    protected function isUsed($idImperfection) {
+        
+        $stmt = $this->connect()->prepare(
+        'SELECT imperfection_id_imperfection FROM to_repair WHERE imperfection_id_imperfection = ?;');
+
+        if(!$stmt->execute(array($idImperfection))) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
+            return;
+        }
+
+        if($stmt->rowCount() == 0) {
+            $stmt = null;
+            return false;
+        }
+    return true;
     }
 }
 ?>

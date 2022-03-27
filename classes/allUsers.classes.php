@@ -23,7 +23,7 @@ class AllUsers extends DatabaseHandler {
 
         $dbAllUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo("<table>");
-        echo("<tr><th>Křestní jméno</th><th>Příjmení</th><th>Mail</th><th>Role</th><th>Souhlas s posíláním mailů</th></tr>");
+        echo("<tr><th>Křestní jméno</th><th>Příjmení</th><th>Mail</th><th>Role</th><th>Posílání mailů</th></tr>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($users, $dbAllUsers[$i]["id_user"]);
             echo("<tr><td>" . $dbAllUsers[$i]["first_name"] . "</td><td>" . $dbAllUsers[$i]["key_name"] . "</td><td>" . $dbAllUsers[$i]["mail"] . "</td><td>" . $dbAllUsers[$i]["role_id_role"] . "</td><td>" . $dbAllUsers[$i]["send_mail"] . '</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td><td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
