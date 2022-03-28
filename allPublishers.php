@@ -11,6 +11,8 @@ include "./header.php";
       if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
          include "./includes/allPublishers.inc.php";
       }
+      else
+         echo "<p>Pro zobrazení obsahu této stránky nemáte dostatečná oprávnění</p>";
    }
    else
       echo "<p>Pro zobrazení obsahu této stránky se musíte přihlásit a mít dostatečná oprávnění</p>";

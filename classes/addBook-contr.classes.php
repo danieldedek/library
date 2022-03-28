@@ -2,22 +2,22 @@
 
 class AddBookContr extends AddBook {
     
-    private $authorName;
+    private $authorNames;
     private $bookName;
     private $publicationYear;
     private $ISBN;
     private $registrationNumber;
-    private $imperfection;
+    private $imperfections;
     private $publisherName;
     private $wrongInputs;
 
-    public function __construct($authorName, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfection, $publisherName) {
-        $this->authorName = $authorName;
+    public function __construct($authorNames, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfections, $publisherName) {
+        $this->authorNames = $authorNames;
         $this->bookName = $bookName;
         $this->publicationYear = $publicationYear;
         $this->ISBN = $ISBN;
         $this->registrationNumber = $registrationNumber;
-        $this->imperfection = $imperfection;
+        $this->imperfections = $imperfections;
         $this->publisherName = $publisherName;
         $this->wrongInputs = array();
     }
@@ -37,8 +37,6 @@ class AddBookContr extends AddBook {
             array_push($this->wrongInputs, "Název závady musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
         if($this->invalidPublisherName() == false)
             array_push($this->wrongInputs, "Jméno vydavatele musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
-        if($this->bookAlreadyAdded() == false)
-            array_push($this->wrongInputs, "Tato kniha již je v databázi");
         if($this->ISBNAlreadyExists() == false)
             array_push($this->wrongInputs, "Kniha s tímto ISBN již je v databázi");
         if($this->registrationNumberAlreadyExists() == false)
@@ -51,14 +49,17 @@ class AddBookContr extends AddBook {
             echo "</div>";
             return;
         }
-        $this->setBook($this->authorName, $this->bookName, $this->publicationYear, $this->ISBN, $this->registrationNumber, $this->imperfection, $this->publisherName);
+        $this->setBook($this->authorNames, $this->bookName, $this->publicationYear, $this->ISBN, $this->registrationNumber, $this->imperfections, $this->publisherName);
         echo '<div class="wrapper"><p>Přidání knihy proběhlo úspěšně</p></div>';
     }
 
     private function invalidAuthorName() {
-        if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->authorName))
-            return false;
-        return true;
+        $valid = true;
+        foreach ($this->authorNames as $authorName) {
+            if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $authorName))
+                $valid = false;
+        }
+        return $valid;
     }
 
     private function invalidBookName() {
@@ -86,23 +87,19 @@ class AddBookContr extends AddBook {
     }
 
     private function invalidImperfection() {
-        if(preg_match("/^$/mu", $this->imperfection)) {
-            $this->imperfection = NULL;
-            return true;
+        $valid = true;
+        foreach ($this->imperfections as $imperfection) {
+            if(preg_match("/^$/mu", $imperfection)) {
+                $imperfection = "NULL";
+            }
+            if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $imperfection))
+                $valid = false;
         }
-        if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->imperfection))
-            return false;
-        return true;
+        return $valid;
     }
 
     private function invalidPublisherName() {
         if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->publisherName))
-            return false;
-        return true;
-    }
-
-    private function bookAlreadyAdded() {
-        if(!$this->checkBook($this->authorName, $this->bookName, $this->publicationYear, $this->ISBN, $this->registrationNumber, $this->imperfection, $this->publisherName))
             return false;
         return true;
     }

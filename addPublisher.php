@@ -23,6 +23,8 @@ include "./header.php";
    </div>
    <?php
       }
+      else
+         echo "<p>Pro zobrazení obsahu této stránky nemáte dostatečná oprávnění</p>";
    }
    else
       echo "<p>Pro zobrazení obsahu této stránky se musíte přihlásit a mít dostatečná oprávnění</p>";

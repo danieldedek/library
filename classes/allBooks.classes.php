@@ -38,7 +38,7 @@ class AllBooks extends DatabaseHandler {
 
         $dbAllBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo("<table>");
-        echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>Vydavatelství</th><th>Rok vydání</th><th>Závada</th></tr>");
+        echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>Vydavatelství</th><th>Rok vydání</th><th>ISBN</th><th>Registrační číslo</th><th>Závada</th></tr>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($books, $dbAllBooks[$i]["id_copy"]);
             echo("<tr><td>" . $dbAllBooks[$i]["author"] . "</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["publisher"] . "</td><td>" . $dbAllBooks[$i]["publication_year"] . "</td><td>" . $dbAllBooks[$i]["ISBN"] . "</td><td>" . $dbAllBooks[$i]["registration_number"] . "</td><td>" . $dbAllBooks[$i]["imperfection"]);
@@ -101,8 +101,6 @@ class AllBooks extends DatabaseHandler {
                     echo '<div class="wrapper"><p>stmt failed</p></div>';
                     return;
                 }
-
-                $stmt = null;
             }
 
             $stmt = $this->connect()->prepare('DELETE FROM to_repair WHERE copy_id_copy = ?;');
@@ -112,8 +110,6 @@ class AllBooks extends DatabaseHandler {
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 return;
             }
-
-            $stmt = null;
 
             $idBook = $this->getIdBook($idCopy);
         
@@ -135,8 +131,6 @@ class AllBooks extends DatabaseHandler {
                     echo '<div class="wrapper"><p>stmt failed</p></div>';
                     return;
                 }
-
-                $stmt = null;
 
                 $stmt = $this->connect()->prepare('DELETE FROM book WHERE id_book = ?;');
         
