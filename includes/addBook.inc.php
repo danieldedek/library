@@ -11,8 +11,10 @@ if(isset($_POST["submit"])) {
    $ISBN = htmlspecialchars($_POST["ISBN"]);
    $registrationNumber = htmlspecialchars($_POST["registrationNumber"]);
    $imperfections = array();
-   foreach ($_POST['imperfection'] as $imperfection) {
-      array_push($imperfections, htmlspecialchars($imperfection));
+   if(isset($_POST["imperfection"])) {
+      foreach ($_POST['imperfection'] as $imperfection) {
+         array_push($imperfections, htmlspecialchars($imperfection));
+      }
    }
    $publisherName = htmlspecialchars($_POST["publisherName"]);
 

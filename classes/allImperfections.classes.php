@@ -4,8 +4,7 @@ class AllImperfections extends DatabaseHandler {
 
     protected function getAllImperfections() {
 
-        $stmt = $this->connect()->prepare(
-        'SELECT id_imperfection, name FROM imperfection;');
+        $stmt = $this->connect()->prepare('SELECT id_imperfection, name FROM imperfection;');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -16,6 +15,23 @@ class AllImperfections extends DatabaseHandler {
         if($stmt->rowCount() == 0) {
             $stmt = null;
             echo '<div class="wrapper"><p>Žádné závady v databázi</p></div>';
+            return;
+        }
+
+        $pagesCount = ceil($stmt->rowCount()/2);
+
+        if(!isset($_GET['page']))
+            $page = 1;
+        else
+            $page = $_GET['page'];
+
+        $thisPageFirstResult = ($page-1)*2;
+
+        $stmt = $this->connect()->prepare('SELECT id_imperfection, name FROM imperfection LIMIT ' . $thisPageFirstResult .  ',2;');
+
+        if(!$stmt->execute(array())) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
             return;
         }
 
@@ -32,7 +48,13 @@ class AllImperfections extends DatabaseHandler {
             else
                 echo('<td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
         }
-        echo("</table></div>");
+        echo("</table>");
+
+        for ($page = 1; $page <= $pagesCount; $page++) {
+            echo('<a href="allImperfections.php?page=' . $page . '">' . $page . '</a>');
+        }
+
+        echo("</div>");
 
         $stmt = null;
 

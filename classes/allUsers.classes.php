@@ -4,8 +4,7 @@ class AllUsers extends DatabaseHandler {
 
     protected function getAllUsers() {
 
-        $stmt = $this->connect()->prepare(
-        'SELECT id_user, first_name, key_name, mail, role_id_role, send_mail FROM user;');
+        $stmt = $this->connect()->prepare('SELECT id_user, first_name, key_name, mail, role_id_role, send_mail FROM user;');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -19,6 +18,23 @@ class AllUsers extends DatabaseHandler {
             return;
         }
 
+        $pagesCount = ceil($stmt->rowCount()/2);
+
+        if(!isset($_GET['page']))
+            $page = 1;
+        else
+            $page = $_GET['page'];
+
+        $thisPageFirstResult = ($page-1)*2;
+
+        $stmt = $this->connect()->prepare('SELECT id_user, first_name, key_name, mail, role_id_role, send_mail FROM user LIMIT ' . $thisPageFirstResult .  ',2;');
+
+        if(!$stmt->execute(array())) {
+            $stmt = null;
+            echo '<div class="wrapper"><p>stmt failed</p></div>';
+            return;
+        }
+
         $users = array();
 
         $dbAllUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -28,7 +44,13 @@ class AllUsers extends DatabaseHandler {
             array_push($users, $dbAllUsers[$i]["id_user"]);
             echo("<tr><td>" . $dbAllUsers[$i]["first_name"] . "</td><td>" . $dbAllUsers[$i]["key_name"] . "</td><td>" . $dbAllUsers[$i]["mail"] . "</td><td>" . $dbAllUsers[$i]["role_id_role"] . "</td><td>" . $dbAllUsers[$i]["send_mail"] . '</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td><td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
         }
-        echo("</table></div>");
+        echo("</table>");
+
+        for ($page = 1; $page <= $pagesCount; $page++) {
+            echo('<a href="allUsers.php?page=' . $page . '">' . $page . '</a>');
+        }
+
+        echo("</div>");
 
         $stmt = null;
 
