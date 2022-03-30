@@ -58,6 +58,26 @@ class AllPublishers extends DatabaseHandler {
 
         $stmt = null;
 
+        if(isset($_POST["editButton"])) {
+
+            $idPublisher = $publishers[$_POST["editButton"]];
+
+            $stmt = $this->connect()->prepare('SELECT name FROM publisher WHERE id_publisher = ?;');
+        
+            if(!$stmt->execute(array($idPublisher))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $dbPublishers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $namePublisher = $dbPublishers[0]["name"];
+
+            $stmt = null;
+
+            header('Location: updatePublisher.php?publisherName=' . $namePublisher);
+        }
+
         if(isset($_POST["deleteButton"])) {
 
             $idPublisher = $publishers[$_POST["deleteButton"]];

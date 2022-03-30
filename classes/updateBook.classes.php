@@ -1,10 +1,10 @@
 <?php
 
-class AddBook extends DatabaseHandler {
+class UpdateBook extends DatabaseHandler {
 
-    protected function checkISBN($ISBN) {
+    protected function checkISBN($oldISBN) {
         $stmt = $this->connect()->prepare('SELECT copy.ISBN FROM copy WHERE copy.ISBN = ?;');
-        if(!$stmt->execute(array($ISBN))) {
+        if(!$stmt->execute(array($oldISBN))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
@@ -15,9 +15,9 @@ class AddBook extends DatabaseHandler {
         return true;
     }
 
-    protected function checkRegistrationNumber($registrationNumber) {
+    protected function checkRegistrationNumber($oldRegistrationNumber) {
         $stmt = $this->connect()->prepare('SELECT copy.registration_number FROM copy WHERE copy.registration_number = ?;');
-        if(!$stmt->execute(array($registrationNumber))) {
+        if(!$stmt->execute(array($oldRegistrationNumber))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
@@ -28,11 +28,11 @@ class AddBook extends DatabaseHandler {
         return true;
     }
 
-    protected function setBook($authorNames, $bookName, $publicationYear, $ISBN, $registrationNumber, $imperfections, $publisherName) {
+    protected function setBook($oldISBN, $oldRegistrationNumber, $newAuthorNames, $newBookName, $newPublicationYear, $newISBN, $newRegistrationNumber, $newImperfections, $newPublisherName) {
         $idAuthors = array();
         $idImperfections = array();
 
-        foreach ($authorNames as $authorName) {
+        foreach ($newAuthorNames as $authorName) {
             $stmt = $this->connect()->prepare('SELECT id_author FROM author WHERE name = ?;');
 
             if(!$stmt->execute(array($authorName))) {
@@ -72,7 +72,7 @@ class AddBook extends DatabaseHandler {
 
         $stmt = $this->connect()->prepare('SELECT id_book FROM book WHERE name = ?;');
 
-        if(!$stmt->execute(array($bookName))) {
+        if(!$stmt->execute(array($newBookName))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
@@ -86,7 +86,7 @@ class AddBook extends DatabaseHandler {
         else {
             $stmt = $this->connect()->prepare('INSERT INTO book(name) VALUES(?);');
 
-            if(!$stmt->execute(array($bookName))) {
+            if(!$stmt->execute(array($newBookName))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -94,7 +94,7 @@ class AddBook extends DatabaseHandler {
 
             $stmt = $this->connect()->prepare('SELECT id_book FROM book WHERE name = ?;');
 
-            if(!$stmt->execute(array($bookName))) {
+            if(!$stmt->execute(array($newBookName))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -108,7 +108,7 @@ class AddBook extends DatabaseHandler {
 
         $stmt = $this->connect()->prepare('SELECT id_publisher FROM publisher WHERE name = ?;');
 
-        if(!$stmt->execute(array($publisherName))) {
+        if(!$stmt->execute(array($newPublisherName))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
@@ -122,7 +122,7 @@ class AddBook extends DatabaseHandler {
         else {
             $stmt = $this->connect()->prepare('INSERT INTO publisher(name) VALUES(?);');
 
-            if(!$stmt->execute(array($publisherName))) {
+            if(!$stmt->execute(array($newPublisherName))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -130,7 +130,7 @@ class AddBook extends DatabaseHandler {
 
             $stmt = $this->connect()->prepare('SELECT id_publisher FROM publisher WHERE name = ?;');
 
-            if(!$stmt->execute(array($publisherName))) {
+            if(!$stmt->execute(array($newPublisherName))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -142,7 +142,7 @@ class AddBook extends DatabaseHandler {
             $stmt = null;
         }
 
-        foreach ($imperfections as $imperfection) {
+        foreach ($newImperfections as $imperfection) {
             if($imperfection != "NULL") {
                 $stmt = $this->connect()->prepare('SELECT id_imperfection FROM imperfection WHERE name = ?;');
 
@@ -213,17 +213,17 @@ class AddBook extends DatabaseHandler {
 
         $stmt = $this->connect()->prepare('INSERT INTO copy(publication_year, ISBN, registration_number, publisher_id_publisher, book_id_book) VALUES(?, ?, ?, ?, ?);');
 
-        if(!$stmt->execute(array($publicationYear, $ISBN, $registrationNumber, $idPublisher, $idBook))) {
+        if(!$stmt->execute(array($newPublicationYear, $newISBN, $newRegistrationNumber, $idPublisher, $idBook))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
         }
 
-        for ($i = 0; $i < count($imperfections); $i++) {
-            if($imperfections[$i] != "NULL") {
+        for ($i = 0; $i < count($newImperfections); $i++) {
+            if($newImperfections[$i] != "NULL") {
                 $stmt = $this->connect()->prepare('SELECT id_copy FROM copy WHERE publication_year = ? AND ISBN = ? AND registration_number = ? AND publisher_id_publisher = ? AND book_id_book = ?;');
 
-                if(!$stmt->execute(array($publicationYear, $ISBN, $registrationNumber, $idPublisher, $idBook))) {
+                if(!$stmt->execute(array($newPublicationYear, $newISBN, $newRegistrationNumber, $idPublisher, $idBook))) {
                     $stmt = null;
                     echo '<div class="wrapper"><p>stmt failed</p></div>';
                     exit();

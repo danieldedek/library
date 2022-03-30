@@ -58,6 +58,26 @@ class AllImperfections extends DatabaseHandler {
 
         $stmt = null;
 
+        if(isset($_POST["editButton"])) {
+
+            $idImperfection = $imperfections[$_POST["editButton"]];
+
+            $stmt = $this->connect()->prepare('SELECT name FROM imperfection WHERE id_imperfection = ?;');
+        
+            if(!$stmt->execute(array($idImperfection))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $dbImperfections = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $nameImperfection = $dbImperfections[0]["name"];
+
+            $stmt = null;
+
+            header('Location: updateImperfection.php?imperfectionName=' . $nameImperfection);
+        }
+
         if(isset($_POST["deleteButton"])) {
 
             $idImperfection = $imperfections[$_POST["deleteButton"]];

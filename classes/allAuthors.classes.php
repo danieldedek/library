@@ -74,6 +74,8 @@ class AllAuthors extends DatabaseHandler {
             $nameAuthor = $dbAuthors[0]["name"];
 
             $stmt = null;
+
+            header('Location: updateAuthor.php?authorName=' . $nameAuthor);
         }
 
         if(isset($_POST["deleteButton"])) {

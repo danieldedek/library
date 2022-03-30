@@ -54,6 +54,38 @@ class AllUsers extends DatabaseHandler {
 
         $stmt = null;
 
+        if(isset($_POST["editButton"])) {
+
+            $idUser = $users[$_POST["editButton"]];
+
+            $stmt = $this->connect()->prepare('SELECT first_name, key_name, mail, role_id_role FROM user WHERE id_user = ?;');
+        
+            if(!$stmt->execute(array($idUser))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $dbUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $firstName = $dbUsers[0]["first_name"];
+            $keyName = $dbUsers[0]["key_name"];
+            $mail = $dbUsers[0]["mail"];
+            $idRole = $dbUsers[0]["role_id_role"];
+
+            $stmt = $this->connect()->prepare('SELECT name FROM role WHERE id_role = ?;');
+        
+            if(!$stmt->execute(array($idRole))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $dbRole = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $role = $dbRole[0]["name"];
+
+            header('Location: addUser.php?firstName=' . $firstName . '&keyName=' . $keyName . '&mail=' . $mail . '&role='. $role);
+        }
+
         if(isset($_POST["deleteButton"])) {
 
             $idUser = $users[$_POST["deleteButton"]];

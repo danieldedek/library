@@ -25,10 +25,10 @@ include "./classes/user.php";
                     <div class="dropdown">
                         <button class="dropbtn">Přidání</button>
                         <div class="dropdown-content">
-                            <a href=addAuthor.php>Přidat autora</a>
+                            <a href=updateAuthor.php>Přidat autora</a>
                             <a href=addBook.php>Přidat knihu</a>
-                            <a href=addImperfection.php>Přidat závadu</a>
-                            <a href=addPublisher.php>Přidat vydavatele</a>
+                            <a href=updateImperfection.php>Přidat závadu</a>
+                            <a href=updatePublisher.php>Přidat vydavatele</a>
                             <?php
 
                             if(unserialize($_SESSION['user'])->getRole() == 3) {

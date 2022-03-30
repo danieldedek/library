@@ -18,15 +18,7 @@ if(isset($_POST["submit"])) {
    }
    $publisherName = htmlspecialchars($_POST["publisherName"]);
 
-   if (isset($_POST['order'])) {
-      echo "<p>Objednané položky:</p>";
-      foreach ($_POST['order'] as $order) {
-          echo "<p>" . $order . "</p>";
-      }
-  }
-
    include "./classes/dbh.classes.php";
-   include "./classes/addAuthor.classes.php";
    include "./classes/addBook.classes.php";
    include "./classes/addBook-contr.classes.php";
 
