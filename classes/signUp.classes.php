@@ -16,12 +16,12 @@ class SignUp extends DatabaseHandler {
         return true;
     }
 
-    protected function setUser($firstName, $keyName, $mail, $password) {
-        $stmt = $this->connect()->prepare('INSERT INTO user(first_name, key_name, mail, password, role_id_role, send_mail) VALUES(?, ?, ?, ?, ?, ?);');
+    protected function setUser($firstName, $lastName, $mail, $password) {
+        $stmt = $this->connect()->prepare('INSERT INTO user(first_name, last_name, mail, password, role_id_role, send_mail) VALUES(?, ?, ?, ?, ?, ?);');
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        if(!$stmt->execute(array($firstName, $keyName, $mail, $hashedPassword, '1', '1'))) {
+        if(!$stmt->execute(array($firstName, $lastName, $mail, $hashedPassword, '1', '1'))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();

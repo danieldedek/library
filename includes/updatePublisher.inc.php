@@ -1,9 +1,9 @@
 <?php
 
-if(isset($_POST["submit"])) {
+if((isset($_POST["submit"])) && (isset($_GET["publisher"]))) {
 
    $newPublisher = htmlspecialchars($_POST["publisher"]);
-   $oldPublisher = htmlspecialchars($_GET['publisherName']);
+   $oldPublisher = htmlspecialchars($_GET['publisher']);
 
    include "./classes/dbh.classes.php";
    include "./classes/updatePublisher.classes.php";

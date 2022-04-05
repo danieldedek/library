@@ -16,7 +16,7 @@ class UpdateUser extends DatabaseHandler {
         return false;
     }
 
-    protected function setUser($oldMail, $newFirstName, $newKeyName, $newMail, $newPassword, $newRole) {
+    protected function setUser($oldMail, $newFirstName, $newLastName, $newMail, $newPassword, $newRole) {
         $stmt = $this->connect()->prepare('SELECT id_role FROM role WHERE name = ?;');
 
         if(!$stmt->execute(array($newRole))) {
@@ -29,9 +29,9 @@ class UpdateUser extends DatabaseHandler {
         $idRole = $dbRole[0]["id_role"];
 
         if($newPassword == "NULL") {
-            $stmt = $this->connect()->prepare('UPDATE user SET first_name=?, key_name=?, mail=?, role_id_role=? WHERE mail=?;');
+            $stmt = $this->connect()->prepare('UPDATE user SET first_name=?, last_name=?, mail=?, role_id_role=? WHERE mail=?;');
 
-            if(!$stmt->execute(array($newFirstName, $newKeyName, $newMail, $idRole, $oldMail))) {
+            if(!$stmt->execute(array($newFirstName, $newLastName, $newMail, $idRole, $oldMail))) {
                 $stmt = null;
                 echo '<div class="wrapper"><p>stmt failed</p></div>';
                 exit();
@@ -41,13 +41,13 @@ class UpdateUser extends DatabaseHandler {
             return;
         }
 
-        $stmt = $this->connect()->prepare('UPDATE user SET first_name=?, key_name=?, mail=?, password=?, role_id_role=? WHERE mail=?;');
+        $stmt = $this->connect()->prepare('UPDATE user SET first_name=?, last_name=?, mail=?, password=?, role_id_role=? WHERE mail=?;');
 
         $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
 
-        echo($newFirstName . " " . $newKeyName . " " . $newMail . " " . $hashedPassword . " " . $idRole . " " . $oldMail);
+        echo($newFirstName . " " . $newLastName . " " . $newMail . " " . $hashedPassword . " " . $idRole . " " . $oldMail);
 
-        if(!$stmt->execute(array($newFirstName, $newKeyName, $newMail, $hashedPassword, $idRole, $oldMail))) {
+        if(!$stmt->execute(array($newFirstName, $newLastName, $newMail, $hashedPassword, $idRole, $oldMail))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();

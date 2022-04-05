@@ -25,10 +25,7 @@ include "./classes/user.php";
                     <div class="dropdown">
                         <button class="dropbtn">Přidání</button>
                         <div class="dropdown-content">
-                            <a href=updateAuthor.php>Přidat autora</a>
                             <a href=addBook.php>Přidat knihu</a>
-                            <a href=updateImperfection.php>Přidat závadu</a>
-                            <a href=updatePublisher.php>Přidat vydavatele</a>
                             <?php
 
                             if(unserialize($_SESSION['user'])->getRole() == 3) {
@@ -57,8 +54,11 @@ include "./classes/user.php";
                             <?php
                             if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
                             ?>
-                            <a href=allImperfections.php>Všechny závady</a>
+                            <a href=allPublicationPlaces.php>Všechna místa vydání</a>
                             <a href=allPublishers.php>Všichni vydavatelé</a>
+                            <a href=allUDCs.php>Všechna mezinárodní desetinná třídění</a>
+                            <a href=allSignatures.php>Všechny signatury</a>
+                            <a href=allImperfections.php>Všechny závady</a>
                             <a href=allUsers.php>Všichni uživatelé</a>
                             <?php
                                 }

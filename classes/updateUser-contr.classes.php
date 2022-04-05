@@ -3,16 +3,16 @@
 class UpdateUserContr extends UpdateUser {
     
     private $newFirstName;
-    private $newKeyName;
+    private $newLastName;
     private $newMail;
     private $newPassword;
     private $newRole;
     private $oldMail;
     private $wrongInputs;
 
-    public function __construct($newFirstName, $newKeyName, $newMail, $newPassword, $newRole, $oldMail) {
+    public function __construct($newFirstName, $newLastName, $newMail, $newPassword, $newRole, $oldMail) {
         $this->newFirstName = $newFirstName;
-        $this->newKeyName = $newKeyName;
+        $this->newLastName = $newLastName;
         $this->newMail = $newMail;
         $this->newPassword = $newPassword;
         $this->newRole = $newRole;
@@ -23,7 +23,7 @@ class UpdateUserContr extends UpdateUser {
     public function updateUser() {
         if($this->invalidFirstName() == false)
             array_push($this->wrongInputs, "Křesní jméno musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
-        if($this->invalidKeyName() == false)
+        if($this->invalidLastName() == false)
             array_push($this->wrongInputs, "Příjmení musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
         if($this->invalidMail() == false)
             array_push($this->wrongInputs, "Email musí být uveden v následujícím formátu: prijmeni.jmeno@purkynka.cz");
@@ -43,7 +43,7 @@ class UpdateUserContr extends UpdateUser {
             echo "</div>";
             return;
         }
-        $this->setUser($this->oldMail, $this->newFirstName, $this->newKeyName, $this->newMail, $this->newPassword, $this->newRole);
+        $this->setUser($this->oldMail, $this->newFirstName, $this->newLastName, $this->newMail, $this->newPassword, $this->newRole);
         echo '<div class="wrapper"><p>Úprava uživatele proběhla úspěšně</p></div>';
     }
 
@@ -53,8 +53,8 @@ class UpdateUserContr extends UpdateUser {
         return true;
     }
 
-    private function invalidKeyName() {
-        if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->newKeyName))
+    private function invalidLastName() {
+        if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->newLastName))
             return false;
         return true;
     }

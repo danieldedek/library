@@ -21,6 +21,16 @@ include "./header.php";
          </div>
       </form>
    </div>
+   <div>
+      <?php
+      if(isset($_GET['newPassword'])) {
+         if($_GET['newPassword'] == "passwordUpdated") {
+            echo "<p>Heslo bylo resetováno</p>";
+         }
+      }
+      ?>
+      <a href="resetPassword.php">Zapomněli jste heslo?</a>
+   </div>
 </div>
 
 <?php

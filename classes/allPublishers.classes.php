@@ -14,7 +14,7 @@ class AllPublishers extends DatabaseHandler {
 
         if($stmt->rowCount() == 0) {
             $stmt = null;
-            echo '<div class="wrapper"><p>Žádné závady v databázi</p></div>';
+            echo '<div class="wrapper"><p>Žádní vydavatelé v databázi</p></div>';
             return;
         }
 
@@ -75,7 +75,7 @@ class AllPublishers extends DatabaseHandler {
 
             $stmt = null;
 
-            header('Location: updatePublisher.php?publisherName=' . $namePublisher);
+            header('Location: updatePublisher.php?publisher=' . $namePublisher);
         }
 
         if(isset($_POST["deleteButton"])) {

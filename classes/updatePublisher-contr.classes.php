@@ -13,10 +13,10 @@ class UpdatePublisherContr extends UpdatePublisher {
     }
 
     public function updatePublisher() {
-        if($this->invalidPublisherName() == false)
+        if($this->invalidPublisher() == false)
             array_push($this->wrongInputs, "Jméno vydavatelství musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
         if($this->publisherDoesNotExist() == true)
-            array_push($this->wrongInputs, "Tohoto vydavatele nelze upravit");
+            array_push($this->wrongInputs, "Tento vydavatel neexistuje");
         if($this->publisherAlreadyAdded() == false)
             array_push($this->wrongInputs, "Tento vydavatel již je v databázi");
         if(!empty($this->wrongInputs)) {
@@ -31,7 +31,7 @@ class UpdatePublisherContr extends UpdatePublisher {
         echo '<div class="wrapper"><p>Úprava vydavatele proběhla úspěšně</p></div>';
     }
 
-    private function invalidPublisherName() {
+    private function invalidPublisher() {
         if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->newPublisher))
             return false;
         return true;

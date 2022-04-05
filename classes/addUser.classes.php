@@ -16,7 +16,7 @@ class AddUser extends DatabaseHandler {
         return true;
     }
 
-    protected function setUser($firstName, $keyName, $mail, $password, $role) {
+    protected function setUser($firstName, $lastName, $mail, $password, $role) {
         $stmt = $this->connect()->prepare('SELECT id_role FROM role WHERE name = ?;');
 
         if(!$stmt->execute(array($role))) {
@@ -28,11 +28,11 @@ class AddUser extends DatabaseHandler {
         $dbRole = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $idRole = $dbRole[0]["id_role"];
 
-        $stmt = $this->connect()->prepare('INSERT INTO user(first_name, key_name, mail, password, role_id_role, send_mail) VALUES(?, ?, ?, ?, ?, ?);');
+        $stmt = $this->connect()->prepare('INSERT INTO user(first_name, last_name, mail, password, role_id_role, send_mail) VALUES(?, ?, ?, ?, ?, ?);');
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        if(!$stmt->execute(array($firstName, $keyName, $mail, $hashedPassword, $idRole, '1'))) {
+        if(!$stmt->execute(array($firstName, $lastName, $mail, $hashedPassword, $idRole, '1'))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();

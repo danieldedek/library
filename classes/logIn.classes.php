@@ -27,7 +27,7 @@ class LogIn extends DatabaseHandler {
             return;
         }
 
-        $user = new User($dbUser[0]["id_user"], $dbUser[0]["first_name"], $dbUser[0]["key_name"], $dbUser[0]["mail"], $dbUser[0]["role_id_role"], $dbUser[0]["send_mail"]);
+        $user = new User($dbUser[0]["id_user"], $dbUser[0]["first_name"], $dbUser[0]["last_name"], $dbUser[0]["mail"], $dbUser[0]["role_id_role"], $dbUser[0]["send_mail"]);
         $_SESSION['user'] = serialize($user);
         $stmt = null;
         header('Location: ./userInfo.php');

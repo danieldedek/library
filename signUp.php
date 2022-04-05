@@ -13,8 +13,8 @@ include "./header.php";
             <input type="text" name="firstName" id="firstName" class="input">
          </div>
          <div class="inputField">
-            <label for="keyName">Příjmení:</label>
-            <input type="text" name="keyName" id="keyName" class="input">
+            <label for="lastName">Příjmení:</label>
+            <input type="text" name="lastName" id="lastName" class="input">
          </div>
          <div class="inputField">
             <label for="mail">Školní mail:</label>

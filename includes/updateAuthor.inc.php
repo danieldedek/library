@@ -1,6 +1,6 @@
 <?php
 
-if(isset($_POST["submit"])) {
+if((isset($_POST["submit"])) && (isset($_GET["authorName"]))) {
 
    $newName = htmlspecialchars($_POST["author"]);
    $oldName = htmlspecialchars($_GET['authorName']);

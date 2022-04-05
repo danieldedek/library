@@ -5,18 +5,18 @@ class AllBooks extends DatabaseHandler {
     protected function getAllBooks() {
 
         $stmt1 = $this->connect()->prepare(
-        'SELECT copy.id_copy, book.id_book, book.name book, publisher.name publisher, copy.publication_year, borrowing.from_date, borrowing.to_date, copy.ISBN, copy.registration_number
+        'SELECT copy.id_copy, book.id_book, book.name book, copy.ISBN, copy.incremental_number, udc.name UDC, user.last_name
         FROM book
         INNER JOIN copy
         ON copy.book_id_book = book.id_book
         INNER JOIN publisher
         ON copy.publisher_id_publisher = publisher.id_publisher
+        LEFT JOIN udc
+        ON copy.UDC_id_UDC = udc.id_UDC
         LEFT JOIN borrowing
         ON copy.id_copy = borrowing.copy_id_copy
-        LEFT JOIN to_repair
-        ON to_repair.copy_id_copy = copy.id_copy
-        LEFT JOIN imperfection
-        ON to_repair.imperfection_id_imperfection = imperfection.id_imperfection;');
+        LEFT JOIN user
+        ON borrowing.user_id_user = user.id_user;');
 
         if(!$stmt1->execute(array())) {
             $stmt1 = null;
@@ -94,18 +94,18 @@ class AllBooks extends DatabaseHandler {
         $thisPageFirstResult = ($page-1)*2;
 
         $stmt = $this->connect()->prepare(
-            'SELECT copy.id_copy, book.id_book, book.name book, publisher.name publisher, copy.publication_year, borrowing.from_date, borrowing.to_date, copy.ISBN, copy.registration_number
+            'SELECT copy.id_copy, book.id_book, book.name book, copy.ISBN, copy.incremental_number, udc.name UDC, user.last_name
             FROM book
             INNER JOIN copy
             ON copy.book_id_book = book.id_book
             INNER JOIN publisher
             ON copy.publisher_id_publisher = publisher.id_publisher
+            LEFT JOIN udc
+            ON copy.UDC_id_UDC = udc.id_UDC
             LEFT JOIN borrowing
             ON copy.id_copy = borrowing.copy_id_copy
-            LEFT JOIN to_repair
-            ON to_repair.copy_id_copy = copy.id_copy
-            LEFT JOIN imperfection
-            ON to_repair.imperfection_id_imperfection = imperfection.id_imperfection
+            LEFT JOIN user
+            ON borrowing.user_id_user = user.id_user
             LIMIT ' . $thisPageFirstResult .  ',2;');
 
         if(!$stmt->execute(array())) {
@@ -117,7 +117,7 @@ class AllBooks extends DatabaseHandler {
         $dbAllBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         echo("<table>");
-        echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>Vydavatelství</th><th>Rok vydání</th><th>ISBN</th><th>Registrační číslo</th><th>Závada</th></tr>");
+        echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>ISBN</th><th>Přírůstkové číslo</th><th>MDT</th><th>Závada</th><th>Zapůjčeno</th></tr>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($books, $dbAllBooks[$i]["id_copy"]);
             echo("<tr><td>");
@@ -125,13 +125,13 @@ class AllBooks extends DatabaseHandler {
                 if($authors[$j][0] == $dbAllBooks[$i]["id_book"])
                     echo($authors[$j][1]) . "<br />";
             }
-            echo("</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["publisher"] . "</td><td>" . $dbAllBooks[$i]["publication_year"] . "</td><td>" . $dbAllBooks[$i]["ISBN"] . "</td><td>" . $dbAllBooks[$i]["registration_number"] . "</td><td>");
+            echo("</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["ISBN"] . "</td><td>" . $dbAllBooks[$i]["incremental_number"] . "</td><td>" . $dbAllBooks[$i]["UDC"] . "</td><td>");
             for ($j = 0; $j < count($imperfections); $j++) {
                 if($imperfections[$j][0] == $dbAllBooks[$i]["id_copy"])
                     echo($imperfections[$j][1]) . "<br />";
             }
             if($this->isBorrowed($dbAllBooks[$i]["id_copy"]))
-                echo("</td><td>" . $dbAllBooks[$i]["to_date"] . '</td><td><form method="POST"><button type="submit" name="returnButton" class="button" value="'.$i.'">Vrátit</button></form>');
+                echo("</td><td>" . $dbAllBooks[$i]["last_name"] . '</td><td><form method="POST"><button type="submit" name="returnButton" class="button" value="'.$i.'">Vrátit</button></form>');
             else
                 echo('</td><td><form method="POST"><button type="submit" name="borrowButton" class="button" value="'.$i.'">Vypůjčit</button></form>');
             echo('</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td><td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
@@ -150,20 +150,8 @@ class AllBooks extends DatabaseHandler {
         if(isset($_POST["borrowButton"])) {
 
             $idCopy = $books[$_POST["borrowButton"]];
-            $idUser = unserialize($_SESSION['user'])->getIdUser();
-        
-            $stmt = $this->connect()->prepare('INSERT INTO borrowing(user_id_user, copy_id_copy, from_date, to_date, extension_count, lent_by) VALUES(?, ?, NOW(), NOW() + INTERVAL 1 MONTH, ?, ?);');
-        
-            if(!$stmt->execute(array($idUser, $idCopy, '0', unserialize($_SESSION['user'])->getIdUser()))) {
-                $stmt = null;
-                echo '<div class="wrapper"><p>stmt failed</p></div>';
-                return;
-            }
 
-            $stmt = null;
-            
-            header("Refresh:0");
-
+            header('Location: allUsers.php?idCopy=' . $idCopy);
         }
 
         if(isset($_POST["returnButton"])) {
@@ -189,18 +177,20 @@ class AllBooks extends DatabaseHandler {
             $idCopy = $books[$_POST["editButton"]];
 
             $stmt = $this->connect()->prepare(
-                'SELECT copy.id_copy, book.id_book, book.name book, publisher.name publisher, copy.publication_year, borrowing.from_date, borrowing.to_date, copy.ISBN, copy.registration_number
+                'SELECT copy.id_copy, book.id_book, book.name book, copy.incremental_number, copy.acquisition_date, copy.price, copy.purchase_document, seller.name seller, copy.publication_year, publication_place.name publication_place, publisher.name publisher, copy.issue_number, copy.page_count, udc.name UDC, signature.name signature, copy.ISBN
                 FROM book
                 INNER JOIN copy
                 ON copy.book_id_book = book.id_book
                 INNER JOIN publisher
                 ON copy.publisher_id_publisher = publisher.id_publisher
-                LEFT JOIN borrowing
-                ON copy.id_copy = borrowing.copy_id_copy
-                LEFT JOIN to_repair
-                ON to_repair.copy_id_copy = copy.id_copy
-                LEFT JOIN imperfection
-                ON to_repair.imperfection_id_imperfection = imperfection.id_imperfection
+                LEFT JOIN udc
+                ON copy.UDC_id_UDC = udc.id_UDC
+                LEFT JOIN seller
+                ON copy.seller_id_seller = seller.id_seller
+                LEFT JOIN publication_place
+                ON copy.publication_place_id_publication_place = publication_place.id_publication_place
+                LEFT JOIN signature
+                ON copy.signature_id_signature = signature.id_signature
                 WHERE copy.id_copy = ?;');
         
             if(!$stmt->execute(array($idCopy))) {
@@ -211,12 +201,21 @@ class AllBooks extends DatabaseHandler {
 
             $dbBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $book = $dbBooks[0]["book"];
-            $publisher = $dbBooks[0]["publisher"];
+            $incrementalNumber = $dbBooks[0]["incremental_number"];
+            $acquisitionDate = $dbBooks[0]["acquisition_date"];
+            $price = $dbBooks[0]["price"];
+            $purchaseDocument = $dbBooks[0]["purchase_document"];
+            $seller = $dbBooks[0]["seller"];
             $publicationYear = $dbBooks[0]["publication_year"];
+            $publicationPlace = $dbBooks[0]["publication_place"];
+            $publisher = $dbBooks[0]["publisher"];
+            $issueNumber = $dbBooks[0]["issue_number"];
+            $pageCount = $dbBooks[0]["page_count"];
+            $UDC = $dbBooks[0]["UDC"];
+            $signature = $dbBooks[0]["signature"];
             $ISBN = $dbBooks[0]["ISBN"];
-            $registrationNumber = $dbBooks[0]["registration_number"];
 
-            header('Location: addBook.php?bookName=' . $book . '&publisherName=' . $publisher . '&publicationYear=' . $publicationYear . '&ISBN='. $ISBN . '&registrationNumber=' . $registrationNumber);
+            header('Location: addBook.php?book=' . $book . '&incrementalNumber=' . $incrementalNumber . '&acquisitionDate=' . $acquisitionDate . '&price=' . $price . '&purchaseDocument=' . $purchaseDocument. '&seller=' . $seller . '&publicationYear=' . $publicationYear. '&publicationPlace=' . $publicationPlace . '&publisher=' . $publisher . '&issueNumber=' . $issueNumber . '&pageCount=' . $pageCount . '&UDC=' . $UDC . '&signature=' . $signature . '&ISBN='. $ISBN);
         }
 
         if(isset($_POST["deleteButton"])) {

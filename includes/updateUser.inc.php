@@ -1,9 +1,9 @@
 <?php
 
-if(isset($_POST["submit1"])) {
+if((isset($_POST["submit1"])) && (isset($_GET["mail"]))) {
 
    $newFirstName = htmlspecialchars($_POST["firstName"]);
-   $newKeyName = htmlspecialchars($_POST["keyName"]);
+   $newLastName = htmlspecialchars($_POST["lastName"]);
    $newMail = htmlspecialchars($_POST["mail"]);
    $newPassword = htmlspecialchars($_POST["password"]);
    $newRole = htmlspecialchars($_POST["role"]);
@@ -13,7 +13,7 @@ if(isset($_POST["submit1"])) {
    include "./classes/updateUser.classes.php";
    include "./classes/updateUser-contr.classes.php";
 
-   $updateUser = new UpdateUserContr($newFirstName, $newKeyName, $newMail, $newPassword, $newRole, $oldMail);
+   $updateUser = new UpdateUserContr($newFirstName, $newLastName, $newMail, $newPassword, $newRole, $oldMail);
 
    $updateUser->updateUser();
 }

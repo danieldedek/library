@@ -3,15 +3,15 @@
 class SignUpContr extends SignUp {
     
     private $firstName;
-    private $keyName;
+    private $lastName;
     private $mail;
     private $password;
     private $passwordVerification;
     private $wrongInputs;
 
-    public function __construct($firstName, $keyName, $mail, $password, $passwordVerification) {
+    public function __construct($firstName, $lastName, $mail, $password, $passwordVerification) {
         $this->firstName = $firstName;
-        $this->keyName = $keyName;
+        $this->lastName = $lastName;
         $this->mail = $mail;
         $this->password = $password;
         $this->passwordVerification = $passwordVerification;
@@ -21,7 +21,7 @@ class SignUpContr extends SignUp {
     public function signUpUser() {
         if($this->invalidFirstName() == false)
             array_push($this->wrongInputs, "Křesní jméno musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
-        if($this->invalidKeyName() == false)
+        if($this->invalidLastName() == false)
             array_push($this->wrongInputs, "Příjmení musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
         if($this->invalidMail() == false)
             array_push($this->wrongInputs, "Email musí být uveden v následujícím formátu: prijmeni.jmeno@purkynka.cz");
@@ -39,7 +39,7 @@ class SignUpContr extends SignUp {
             echo "</div>";
             return;
         }
-        $this->setUser($this->firstName, $this->keyName, $this->mail, $this->password);
+        $this->setUser($this->firstName, $this->lastName, $this->mail, $this->password);
         echo '<div class="wrapper"><p>Registrace proběhla úspěšně</p></div>';
     }
 
@@ -49,8 +49,8 @@ class SignUpContr extends SignUp {
         return true;
     }
 
-    private function invalidKeyName() {
-        if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->keyName))
+    private function invalidLastName() {
+        if(!preg_match("/^[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+(\s[A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ][a-záčďéěíňóřšťúůýž]+)?$/mu", $this->lastName))
             return false;
         return true;
     }

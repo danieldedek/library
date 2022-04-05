@@ -49,11 +49,76 @@ else {
             <a href="#" id="removeFieldsAuthor">Odebrat pole pro jméno autora</a>
          </div>
          <div class="inputField">
-            <label for="bookName">Název knihy:</label>
-            <input type="text" name="bookName" id="bookName" class="input"
+            <label for="book">Název knihy:</label>
+            <input type="text" name="book" id="book" class="input"
             <?php
-            if(isset($_GET['bookName'])) {
-               echo(' value="' . $_GET['bookName'] . '"');
+            if(isset($_GET['book'])) {
+               echo(' value="' . $_GET['book'] . '"');
+            }
+            if(isset($_POST['book'])) {
+               echo(' value="' . $_POST['book'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="incrementalNumber">Přírůstkové číslo:</label>
+            <input type="text" name="incrementalNumber" id="incrementalNumber" class="input"
+            <?php
+            if(isset($_GET['incrementalNumber'])) {
+               echo(' value="' . $_GET['incrementalNumber'] . '"');
+            }
+            if(isset($_POST['incrementalNumber'])) {
+               echo(' value="' . $_POST['incrementalNumber'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="acquisitionDate">Datum zařazení do knihovny:</label>
+            <input type="text" name="acquisitionDate" id="acquisitionDate" class="input"
+            <?php
+            if(isset($_GET['acquisitionDate'])) {
+               echo(' value="' . $_GET['acquisitionDate'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="price">Cena:</label>
+            <input type="text" name="price" id="price" class="input"
+            <?php
+            if(isset($_GET['price'])) {
+               echo(' value="' . $_GET['price'] . '"');
+            }
+            if(isset($_POST['price'])) {
+               echo(' value="' . $_POST['price'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="purchaseDocument">Doklad o koupi:</label>
+            <input type="text" name="purchaseDocument" id="purchaseDocument" class="input"
+            <?php
+            if(isset($_GET['purchaseDocument'])) {
+               echo(' value="' . $_GET['purchaseDocument'] . '"');
+            }
+            if(isset($_POST['purchaseDocument'])) {
+               echo(' value="' . $_POST['purchaseDocument'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="seller">Získáno od:</label>
+            <input type="text" name="seller" id="seller" class="input"
+            <?php
+            if(isset($_GET['seller'])) {
+               echo(' value="' . $_GET['seller'] . '"');
+            }
+            if(isset($_POST['seller'])) {
+               echo(' value="' . $_POST['seller'] . '"');
             }
             ?>
             >
@@ -65,6 +130,87 @@ else {
             if(isset($_GET['publicationYear'])) {
                echo(' value="' . $_GET['publicationYear'] . '"');
             }
+            if(isset($_POST['publicationYear'])) {
+               echo(' value="' . $_POST['publicationYear'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="publicationPlace">Místo vydání:</label>
+            <input type="text" name="publicationPlace" id="publicationPlace" class="input"
+            <?php
+            if(isset($_GET['publicationPlace'])) {
+               echo(' value="' . $_GET['publicationPlace'] . '"');
+            }
+            if(isset($_POST['publicationPlace'])) {
+               echo(' value="' . $_POST['publicationPlace'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="publisher">Vydavatel:</label>
+            <input type="text" name="publisher" id="publisher" class="input"
+            <?php
+            if(isset($_GET['publisher'])) {
+               echo(' value="' . $_GET['publisher'] . '"');
+            }
+            if(isset($_POST['publisher'])) {
+               echo(' value="' . $_POST['publisher'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="issueNumber">Číslo vydání:</label>
+            <input type="text" name="issueNumber" id="issueNumber" class="input"
+            <?php
+            if(isset($_GET['issueNumber'])) {
+               echo(' value="' . $_GET['issueNumber'] . '"');
+            }
+            if(isset($_POST['issueNumber'])) {
+               echo(' value="' . $_POST['issueNumber'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="pageCount">Počet stran:</label>
+            <input type="text" name="pageCount" id="pageCount" class="input"
+            <?php
+            if(isset($_GET['pageCount'])) {
+               echo(' value="' . $_GET['pageCount'] . '"');
+            }
+            if(isset($_POST['pageCount'])) {
+               echo(' value="' . $_POST['pageCount'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="UDC">Mezinárodní desetinné třídění:</label>
+            <input type="text" name="UDC" id="UDC" class="input"
+            <?php
+            if(isset($_GET['UDC'])) {
+               echo(' value="' . $_GET['UDC'] . '"');
+            }
+            if(isset($_POST['UDC'])) {
+               echo(' value="' . $_POST['UDC'] . '"');
+            }
+            ?>
+            >
+         </div>
+         <div class="inputField">
+            <label for="signature">Signatura:</label>
+            <input type="text" name="signature" id="signature" class="input"
+            <?php
+            if(isset($_GET['signature'])) {
+               echo(' value="' . $_GET['signature'] . '"');
+            }
+            if(isset($_POST['signature'])) {
+               echo(' value="' . $_POST['signature'] . '"');
+            }
             ?>
             >
          </div>
@@ -75,15 +221,8 @@ else {
             if(isset($_GET['ISBN'])) {
                echo(' value="' . $_GET['ISBN'] . '"');
             }
-            ?>
-            >
-         </div>
-         <div class="inputField">
-            <label for="registrationNumber">Registrační číslo:</label>
-            <input type="text" name="registrationNumber" id="registrationNumber" class="input"
-            <?php
-            if(isset($_GET['registrationNumber'])) {
-               echo(' value="' . $_GET['registrationNumber'] . '"');
+            if(isset($_POST['ISBN'])) {
+               echo(' value="' . $_POST['ISBN'] . '"');
             }
             ?>
             >
@@ -108,18 +247,8 @@ else {
             <a href="#" id="addFieldsImperfection">Přidat pole pro závadu</a>
             <a href="#" id="removeFieldsImperfection">Odebrat pole pro závadu</a>
          </div>
-         <div class="inputField">
-            <label for="publisherName">Vydavatel:</label>
-            <input type="text" name="publisherName" id="publisherName" class="input"
-            <?php
-            if(isset($_GET['publisherName'])) {
-               echo(' value="' . $_GET['publisherName'] . '"');
-            }
-            ?>
-            >
-         </div>
          <?php
-         if(isset($_GET['mail'])) {
+         if(isset($_GET['ISBN'])) {
             echo('<div class="inputField"><button type="submit" name="submit1" class="button">Upravit knihu</button></div>');
          }
          else {

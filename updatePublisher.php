@@ -16,8 +16,8 @@ include "./header.php";
             <label for="publisher">Jméno vydavatelství:</label>
             <input type="text" name="publisher" id="publisher" class="input"
             <?php
-            if(isset($_GET['publisherName'])) {
-               echo(' value="' . $_GET['publisherName'] . '"');
+            if(isset($_GET['publisher'])) {
+               echo(' value="' . $_GET['publisher'] . '"');
             }
             ?>
             >

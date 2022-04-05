@@ -30,11 +30,11 @@ else {
             >
          </div>
          <div class="inputField">
-            <label for="keyName">Příjmení:</label>
-            <input type="text" name="keyName" id="keyName" class="input"
+            <label for="lastName">Příjmení:</label>
+            <input type="text" name="lastName" id="lastName" class="input"
             <?php
-            if(isset($_GET['keyName'])) {
-               echo(' value="' . $_GET['keyName'] . '"');
+            if(isset($_GET['lastName'])) {
+               echo(' value="' . $_GET['lastName'] . '"');
             }
             ?>
             >
