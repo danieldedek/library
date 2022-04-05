@@ -1,5 +1,6 @@
 <?php
 include "./header.php";
+include "./classes/dbh.classes.php";
 ?>
 
 <script src="./script.js"></script>
@@ -24,8 +25,21 @@ else {
             <label for="authorName">Jméno autora:</label>
             <input type="text" name="authorName[]" id="authorName" class="input"
             <?php
-            if(isset($_GET['authorName'])) {
-               echo(' value="' . $_GET['authorName'] . '"');
+            if(isset($_GET['ISBN'])) {
+               include "./classes/setAuthors.classes.php";
+               include "./classes/setAuthors-contr.classes.php";
+
+               $setAuthors = new SetAuthorsContr($_GET['ISBN']);
+
+               $authors = $setAuthors->setAuthors();
+
+               echo(' value="' . $authors[0] . '"');
+
+               if (sizeof($authors) > 1) {
+                  for ($i = 1; $i < sizeof($authors); $i++) {
+                     echo('><label for="authorName">Jméno autora:</label><input type="text" name="authorName[]" id="authorName" class="input" value="' . $authors[$i] . '"');
+                  }
+               }
             }
             ?>
             >
@@ -75,6 +89,20 @@ else {
             >
          </div>
          <div class="inputField" id="imperfectionDiv">
+         <?php
+            if(isset($_GET['ISBN'])) {
+               include "./classes/setImperfections.classes.php";
+               include "./classes/setImperfections-contr.classes.php";
+
+               $setImperfections = new SetImperfectionsContr($_GET['ISBN']);
+
+               $imperfections = $setImperfections->setImperfections();
+
+               for ($i = 0; $i < sizeof($imperfections); $i++) {
+                  echo('<label for="imperfection">Závada:</label><input type="text" name="imperfection[]" id="imperfection" class="input" value="' . $imperfections[$i] . '">');
+               }
+            }
+            ?>
          </div>
          <div class="controls">
             <a href="#" id="addFieldsImperfection">Přidat pole pro závadu</a>

@@ -184,6 +184,41 @@ class AllBooks extends DatabaseHandler {
 
         }
 
+        if(isset($_POST["editButton"])) {
+
+            $idCopy = $books[$_POST["editButton"]];
+
+            $stmt = $this->connect()->prepare(
+                'SELECT copy.id_copy, book.id_book, book.name book, publisher.name publisher, copy.publication_year, borrowing.from_date, borrowing.to_date, copy.ISBN, copy.registration_number
+                FROM book
+                INNER JOIN copy
+                ON copy.book_id_book = book.id_book
+                INNER JOIN publisher
+                ON copy.publisher_id_publisher = publisher.id_publisher
+                LEFT JOIN borrowing
+                ON copy.id_copy = borrowing.copy_id_copy
+                LEFT JOIN to_repair
+                ON to_repair.copy_id_copy = copy.id_copy
+                LEFT JOIN imperfection
+                ON to_repair.imperfection_id_imperfection = imperfection.id_imperfection
+                WHERE copy.id_copy = ?;');
+        
+            if(!$stmt->execute(array($idCopy))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $dbBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $book = $dbBooks[0]["book"];
+            $publisher = $dbBooks[0]["publisher"];
+            $publicationYear = $dbBooks[0]["publication_year"];
+            $ISBN = $dbBooks[0]["ISBN"];
+            $registrationNumber = $dbBooks[0]["registration_number"];
+
+            header('Location: addBook.php?bookName=' . $book . '&publisherName=' . $publisher . '&publicationYear=' . $publicationYear . '&ISBN='. $ISBN . '&registrationNumber=' . $registrationNumber);
+        }
+
         if(isset($_POST["deleteButton"])) {
 
             $idCopy = $books[$_POST["deleteButton"]];

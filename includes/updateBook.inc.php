@@ -20,7 +20,6 @@ if(isset($_POST["submit1"])) {
    $oldISBN = htmlspecialchars($_GET["ISBN"]);
    $oldRegistrationNumber = htmlspecialchars($_GET["registrationNumber"]);
 
-   include "./classes/dbh.classes.php";
    include "./classes/updateBook.classes.php";
    include "./classes/updateBook-contr.classes.php";
 
