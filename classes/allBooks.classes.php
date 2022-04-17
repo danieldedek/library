@@ -58,32 +58,6 @@ class AllBooks extends DatabaseHandler {
             array_push($authors, array($dbAllAuthors[$i]["book_id_book"], $dbAllAuthors[$i]["name"]));
         }
 
-        $imperfections = array();
-
-        $stmt = $this->connect()->prepare(
-            'SELECT to_repair.copy_id_copy, imperfection.name
-            FROM imperfection
-            INNER JOIN  to_repair
-            ON imperfection.id_imperfection = to_repair.imperfection_id_imperfection;');
-    
-        if(!$stmt->execute(array())) {
-            $stmt = null;
-            echo '<div class="wrapper"><p>stmt failed</p></div>';
-            return;
-        }
-
-        if($stmt->rowCount() == 0) {
-            $stmt = null;
-            echo '<div class="wrapper"><p>Žádné závady v databázi</p></div>';
-            return;
-        }
-
-        $dbAllImperfections = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        for ($i = 0; $i < $stmt->rowCount(); $i++) {
-            array_push($imperfections, array($dbAllImperfections[$i]["copy_id_copy"], $dbAllImperfections[$i]["name"]));
-        }
-
         $pagesCount = ceil($stmt1->rowCount()/2);
 
         if(!isset($_GET['page']))
@@ -117,7 +91,7 @@ class AllBooks extends DatabaseHandler {
         $dbAllBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         echo("<table>");
-        echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>ISBN</th><th>Přírůstkové číslo</th><th>MDT</th><th>Závada</th><th>Zapůjčeno</th></tr>");
+        echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>ISBN</th><th>Přírůstkové číslo</th><th>MDT</th><th>Zapůjčeno</th></tr>");
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($books, $dbAllBooks[$i]["id_copy"]);
             echo("<tr><td>");
@@ -125,16 +99,16 @@ class AllBooks extends DatabaseHandler {
                 if($authors[$j][0] == $dbAllBooks[$i]["id_book"])
                     echo($authors[$j][1]) . "<br />";
             }
-            echo("</td><td>" . $dbAllBooks[$i]["book"] . "</td><td>" . $dbAllBooks[$i]["ISBN"] . "</td><td>" . $dbAllBooks[$i]["incremental_number"] . "</td><td>" . $dbAllBooks[$i]["UDC"] . "</td><td>");
-            for ($j = 0; $j < count($imperfections); $j++) {
-                if($imperfections[$j][0] == $dbAllBooks[$i]["id_copy"])
-                    echo($imperfections[$j][1]) . "<br />";
-            }
+            echo('</td><td><a href="showBook.php?ISBN=' . $dbAllBooks[$i]["ISBN"] . '">' . $dbAllBooks[$i]["book"] . "</a></td><td>" . $dbAllBooks[$i]["ISBN"] . "</td><td>" . $dbAllBooks[$i]["incremental_number"] . "</td><td>" . $dbAllBooks[$i]["UDC"] . "</td>");
             if($this->isBorrowed($dbAllBooks[$i]["id_copy"]))
-                echo("</td><td>" . $dbAllBooks[$i]["last_name"] . '</td><td><form method="POST"><button type="submit" name="returnButton" class="button" value="'.$i.'">Vrátit</button></form>');
+                echo("<td>" . $dbAllBooks[$i]["last_name"] . '</td><td><form method="POST"><button type="submit" name="returnButton" class="button" value="'.$i.'">Vrátit</button></form>');
             else
-                echo('</td><td><form method="POST"><button type="submit" name="borrowButton" class="button" value="'.$i.'">Vypůjčit</button></form>');
-            echo('</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td><td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
+                echo('<td><form method="POST"><button type="submit" name="borrowButton" class="button" value="'.$i.'">Vypůjčit</button></form>');
+            echo('</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td>');
+            if(!$this->isBorrowed($dbAllBooks[$i]["id_copy"]))
+                echo ('<td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
+            else
+             echo ('</tr>');
         }
         echo("</table>");
 

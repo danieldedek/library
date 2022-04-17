@@ -7,14 +7,16 @@ class SignUpContr extends SignUp {
     private $mail;
     private $password;
     private $passwordVerification;
+    private $verificationCode;
     private $wrongInputs;
 
-    public function __construct($firstName, $lastName, $mail, $password, $passwordVerification) {
+    public function __construct($firstName, $lastName, $mail, $password, $passwordVerification, $verificationCode) {
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->mail = $mail;
         $this->password = $password;
         $this->passwordVerification = $passwordVerification;
+        $this->verificationCode = $verificationCode;
         $this->wrongInputs = array();
     }
 
@@ -39,7 +41,7 @@ class SignUpContr extends SignUp {
             echo "</div>";
             return;
         }
-        $this->setUser($this->firstName, $this->lastName, $this->mail, $this->password);
+        $this->setUser($this->firstName, $this->lastName, $this->mail, $this->password, $this->verificationCode);
         echo '<div class="wrapper"><p>Registrace proběhla úspěšně</p></div>';
     }
 
