@@ -4,7 +4,7 @@ include "./header.php";
 
 <div class="wrapper">
    <div class="title">
-      Upravit signaturu
+      Úprava signatury
    </div>
    <?php
    if(isset($_SESSION['user'])) {

@@ -16,9 +16,9 @@ if(isset($_POST['submit'])) {
                 continue;
             $authorNames = array();
             array_push($authorNames, htmlspecialchars($line[0]));
-            $book = $line[1];
-            $incrementalNumber = $line[2];
-            $acquisitionDate = date("Y-m-d", strtotime($line[3]));
+            $book = htmlspecialchars($line[1]);
+            $incrementalNumber = htmlspecialchars($line[2]);
+            $acquisitionDate = date("Y-m-d", strtotime(htmlspecialchars($line[3])));
             $price = htmlspecialchars($line[4]);
             $purchaseDocument = htmlspecialchars($line[5]);
             $seller = htmlspecialchars($line[6]);

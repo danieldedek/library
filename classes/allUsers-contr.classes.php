@@ -2,11 +2,16 @@
 
 class AllUsersContr extends AllUsers {
 
-    public function __construct() {
+    private $order;
+    private $sort;
+
+    public function __construct($order, $sort) {
+        $this->order = $order;
+        $this->sort = $sort;
     }
 
     public function showAllUsers() {
-        $this->getAllUsers();
+        $this->getAllUsers($this->order, $this->sort);
     }
 }
 ?>

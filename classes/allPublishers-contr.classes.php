@@ -2,11 +2,14 @@
 
 class AllPublishersContr extends AllPublishers {
 
-    public function __construct() {
+    private $sort;
+
+    public function __construct($sort) {
+        $this->sort = $sort;
     }
 
     public function showAllPublishers() {
-        $this->getAllPublishers();
+        $this->getAllPublishers($this->sort);
     }
 }
 ?>

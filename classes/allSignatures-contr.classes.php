@@ -2,11 +2,14 @@
 
 class AllSignaturesContr extends AllSignatures {
 
-    public function __construct() {
+    private $sort;
+
+    public function __construct($sort) {
+        $this->sort = $sort;
     }
 
     public function showAllSignatures() {
-        $this->getAllSignatures();
+        $this->getAllSignatures($this->sort);
     }
 }
 ?>

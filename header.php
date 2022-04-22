@@ -12,11 +12,11 @@ include "./classes/user.php";
 </head>
 <body>
     <header>
-        <a href=index.php>
-            <img src=#>
-        </a>
         <nav>
             <ul>
+                <li>
+                    <a href=index.php>KNIHOVNA</a>
+                </li>
                 <?php
                 if(isset($_SESSION['user'])) {
                     if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
@@ -26,12 +26,14 @@ include "./classes/user.php";
                         <button class="dropbtn">Přidání</button>
                         <div class="dropdown-content">
                             <a href=addBook.php>Přidat knihu</a>
+                            <a href=importCSV.php>Import knih</a>
                             <?php
 
                             if(unserialize($_SESSION['user'])->getRole() == 3) {
                             ?>
 
                             <a href=addUser.php>Přidat uživatele</a>
+                            <a href=importCSVUsers.php>Import uživatelů</a>
                         </div>
                     </div>
                 </li>
@@ -46,6 +48,8 @@ include "./classes/user.php";
                         <?php
                         if(unserialize($_SESSION['user'])->getRole() == 2 || unserialize($_SESSION['user'])->getRole() == 3) {
                         ?>
+                            <a href=allBorrowings.php>Všechny výpůjčky</a>
+                            <a href=allLastingBorrowings.php>Všechny trvalé výpůjčky</a>
                             <a href=allAuthors.php>Všichni autoři</a>
                             <?php
                             }
@@ -56,6 +60,7 @@ include "./classes/user.php";
                             ?>
                             <a href=allPublicationPlaces.php>Všechna místa vydání</a>
                             <a href=allPublishers.php>Všichni vydavatelé</a>
+                            <a href=allSellers.php>Všechni prodejci</a>
                             <a href=allUDCs.php>Všechna mezinárodní desetinná třídění</a>
                             <a href=allSignatures.php>Všechny signatury</a>
                             <a href=allImperfections.php>Všechny závady</a>
@@ -67,7 +72,6 @@ include "./classes/user.php";
                         </div>
                     </div>
                 </li>
-                <li><a href=index.php>Domovská stránka</a></li>
                 <?php
                 if(isset($_SESSION["user"])) {
                 ?>

@@ -19,7 +19,7 @@ include "./header.php";
       <?php
       if(isset($_GET['reset'])) {
          if($_GET['reset'] == "success") {
-            echo "<p>Check your mail!</p>";
+            echo "<p>Podívejte se na mail!</p>";
          }
       }
       ?>

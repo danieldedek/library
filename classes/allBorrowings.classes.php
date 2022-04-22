@@ -2,7 +2,7 @@
 
 class AllBorrowings extends DatabaseHandler {
 
-    protected function getAllBorrowings() {
+    protected function getAllBorrowings($order, $sort) {
 
         $stmt1 = $this->connect()->prepare(
         'SELECT copy.id_copy, book.id_book, book.name book, copy.ISBN, copy.incremental_number, udc.name UDC, user.last_name, borrowing.from_date, borrowing.extended
@@ -16,7 +16,9 @@ class AllBorrowings extends DatabaseHandler {
         INNER JOIN borrowing
         ON copy.id_copy = borrowing.copy_id_copy
         INNER JOIN user
-        ON borrowing.user_id_user = user.id_user;');
+        ON borrowing.user_id_user = user.id_user
+        WHERE borrowing.lasting = 0
+        ORDER BY ' . $order .  ' ' . $sort .  ';');
 
         if(!$stmt1->execute(array())) {
             $stmt1 = null;
@@ -58,14 +60,14 @@ class AllBorrowings extends DatabaseHandler {
             array_push($authors, array($dbAllAuthors[$i]["book_id_book"], $dbAllAuthors[$i]["name"]));
         }
 
-        $pagesCount = ceil($stmt1->rowCount()/2);
+        $pagesCount = ceil($stmt1->rowCount()/50);
 
         if(!isset($_GET['page']))
             $page = 1;
         else
             $page = $_GET['page'];
 
-        $thisPageFirstResult = ($page-1)*2;
+        $thisPageFirstResult = ($page-1)*50;
 
         $stmt = $this->connect()->prepare(
             'SELECT copy.id_copy, book.id_book, book.name book, copy.ISBN, copy.incremental_number, udc.name UDC, user.last_name, borrowing.from_date, borrowing.extended
@@ -80,7 +82,9 @@ class AllBorrowings extends DatabaseHandler {
             ON copy.id_copy = borrowing.copy_id_copy
             INNER JOIN user
             ON borrowing.user_id_user = user.id_user
-            LIMIT ' . $thisPageFirstResult .  ',2;');
+            WHERE borrowing.lasting = 0
+            ORDER BY ' . $order .  ' ' . $sort . ' 
+            LIMIT ' . $thisPageFirstResult .  ',50;');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -90,8 +94,13 @@ class AllBorrowings extends DatabaseHandler {
 
         $dbAllBooks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        if($sort == 'DESC')
+            $sort = 'ASC';
+        else 
+            $sort = 'DESC';
+
         echo("<table>");
-        echo("<tr><th>Jméno autora</th><th>Název knihy</th><th>ISBN</th><th>Přírůstkové číslo</th><th>MDT</th><th>Zapůjčeno</th><th>Zapůjčeno</th><th>Vrátit</th></tr>");
+        echo('<tr><th>Jméno autora</th><th><a href="allBorrowings.php?order=book&sort=' . $sort . '">Název knihy</a></th><th><a href="allBorrowings.php?order=ISBN&sort=' . $sort . '">ISBN</a></th><th><a href="allBorrowings.php?order=incremental_number&sort=' . $sort . '">Přírůstkové číslo</a></th><th><a href="allBorrowings.php?order=UDC&sort=' . $sort . '">MDT</a></th><th>Zapůjčeno</th><th>Zapůjčeno</th><th>Vrátit</th><th></th><th></th><th></th></tr>');
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($books, $dbAllBooks[$i]["id_copy"]);
             echo("<tr><td>");
@@ -102,15 +111,14 @@ class AllBorrowings extends DatabaseHandler {
             echo('</td><td><a href="showBook.php?ISBN=' . $dbAllBooks[$i]["ISBN"] . '">' . $dbAllBooks[$i]["book"] . "</a></td><td>" . $dbAllBooks[$i]["ISBN"] . "</td><td>" . $dbAllBooks[$i]["incremental_number"] . "</td><td>" . $dbAllBooks[$i]["UDC"] . "</td><td>" . $dbAllBooks[$i]["last_name"] . "</td><td>" . date("d-m-Y", strtotime($dbAllBooks[$i]["from_date"])) . "</td><td>" . date("d-m-Y", strtotime("+1 month", strtotime($dbAllBooks[$i]["from_date"]))) . "</td>");
             echo('<td><form method="POST"><button type="submit" name="returnButton" class="button" value="'.$i.'">Vrátit</button></form></td>');
             if($dbAllBooks[$i]["extended"] == 0) {
-                echo('<td><form method="POST"><button type="submit" name="extendButton" class="button" value="'.$i.'">Prodloužit</button></form></td></tr>');
+                echo('<td><form method="POST"><button type="submit" name="extendButton" class="button" value="'.$i.'">Prodloužit</button></form></td>');
             }
-            else
-                echo('</tr>');
+            echo('<td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Zrušit</button></form></td></tr>');
         }
-        echo("</table>");
+        echo("</table><br />");
 
         for ($page = 1; $page <= $pagesCount; $page++) {
-            echo('<a href="allBooks.php?page=' . $page . '">' . $page . '</a>');
+            echo('<a href="allBooks.php?page=' . $page . '" class="page">' . $page . '</a>');
         }
 
         echo("</div>");
@@ -121,7 +129,42 @@ class AllBorrowings extends DatabaseHandler {
         if(isset($_POST["returnButton"])) {
 
             $idCopy = $books[$_POST["returnButton"]];
+
+            $stmt = $this->connect()->prepare('SELECT * FROM borrowing WHERE copy_id_copy = ?;');
         
+            if(!$stmt->execute(array($idCopy))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $dbBorrowing = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmt = $this->connect()->prepare('INSERT INTO borrowing_history(user_id_user, copy_id_copy, from_date, extended, user_id_lent_by, lasting, user_id_received_by, returned_date) VALUES(?, ?, ?, ?, ?, ?, ?, ?);');
+        
+            if(!$stmt->execute(array($dbBorrowing[0]["user_id_user"], $dbBorrowing[0]["copy_id_copy"], $dbBorrowing[0]["from_date"], $dbBorrowing[0]["extended"], $dbBorrowing[0]["user_id_lent_by"], $dbBorrowing[0]["lasting"], unserialize($_SESSION['user'])->getIdUser(), date("Y-m-d")))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $stmt = $this->connect()->prepare('DELETE FROM borrowing WHERE copy_id_copy = ?;');
+        
+            if(!$stmt->execute(array($idCopy))) {
+                $stmt = null;
+                echo '<div class="wrapper"><p>stmt failed</p></div>';
+                return;
+            }
+
+            $stmt = null;
+            
+            header("Refresh:0");
+        }
+
+        if(isset($_POST["deleteButton"])) {
+
+            $idCopy = $books[$_POST["deleteButton"]];
+
             $stmt = $this->connect()->prepare('DELETE FROM borrowing WHERE copy_id_copy = ?;');
         
             if(!$stmt->execute(array($idCopy))) {

@@ -8,11 +8,26 @@ include "./header.php";
    </div>
    <?php
    if(isset($_SESSION['user'])) {
-      echo "<p>" . unserialize($_SESSION['user'])->getFirstName() . "</p>";
-      echo "<p>" . unserialize($_SESSION['user'])->getKeyName() . "</p>";
-      echo "<p>" . unserialize($_SESSION['user'])->getMail() . "</p>";
-      echo "<p>" . unserialize($_SESSION['user'])->getSendMail() . "</p>";
+      echo "<table><tr><th>Křestní jméno</th><td>" . unserialize($_SESSION['user'])->getFirstName() . "</td></tr>";
+      echo "<tr><th>Příjmení</th><td>" . unserialize($_SESSION['user'])->getKeyName() . "</td></tr>";
+      echo "<tr><th>Mail</th><td>" . unserialize($_SESSION['user'])->getMail() . "</td></tr>";
+      ?>
 
+      <form method="POST">
+      <tr><th>Doručování mailů</th><td><input type="radio" name="sendMail" value="yes"
+         <?php
+         if((unserialize($_SESSION['user'])->getSendMail()) == 1)
+            echo "checked";
+         ?>>ano
+         <input type="radio" name="sendMail" value="no"
+         <?php
+         if((unserialize($_SESSION['user'])->getSendMail()) == 0)
+            echo "checked";
+         ?>>ne
+         <button type="submit" name="submit">Potvrdit</button></td></tr></table><br />
+      </form>
+
+      <?php
       include "./includes/userInfo.inc.php";
    }
 

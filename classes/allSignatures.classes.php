@@ -2,9 +2,9 @@
 
 class AllSignatures extends DatabaseHandler {
 
-    protected function getAllSignatures() {
+    protected function getAllSignatures($sort) {
 
-        $stmt = $this->connect()->prepare('SELECT id_signature, name FROM signature;');
+        $stmt = $this->connect()->prepare('SELECT id_signature, name FROM signature ORDER BY name ' . $sort .  ';');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -18,16 +18,16 @@ class AllSignatures extends DatabaseHandler {
             return;
         }
 
-        $pagesCount = ceil($stmt->rowCount()/2);
+        $pagesCount = ceil($stmt->rowCount()/50);
 
         if(!isset($_GET['page']))
             $page = 1;
         else
             $page = $_GET['page'];
 
-        $thisPageFirstResult = ($page-1)*2;
+        $thisPageFirstResult = ($page-1)*50;
 
-        $stmt = $this->connect()->prepare('SELECT id_signature, name FROM signature LIMIT ' . $thisPageFirstResult .  ',2;');
+        $stmt = $this->connect()->prepare('SELECT id_signature, name FROM signature ORDER BY name ' . $sort .  ' LIMIT ' . $thisPageFirstResult .  ',50;');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -38,8 +38,14 @@ class AllSignatures extends DatabaseHandler {
         $signatures = array();
 
         $dbAllSignatures = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if($sort == 'DESC')
+            $sort = 'ASC';
+        else 
+            $sort = 'DESC';
+
         echo("<table>");
-        echo("<tr><th>Vydavatelství</th></tr>");
+        echo('<tr><th><a href="allSignatures.php?sort=' . $sort . '">Signatura</a></th><th><form method="POST"><button type="submit" name="searchButton" class="button">Vyhledat</button></form></th></tr>');
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($signatures, $dbAllSignatures[$i]["id_signature"]);
             echo("<tr><td>" . $dbAllSignatures[$i]["name"] . '</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td>');
@@ -48,15 +54,20 @@ class AllSignatures extends DatabaseHandler {
             else
                 echo('<td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
         }
-        echo("</table>");
+        echo("</table><br />");
 
         for ($page = 1; $page <= $pagesCount; $page++) {
-            echo('<a href="allSignatures.php?page=' . $page . '">' . $page . '</a>');
+            echo('<a href="allSignatures.php?page=' . $page . '" class="page">' . $page . '</a>');
         }
 
         echo("</div>");
 
         $stmt = null;
+
+        if(isset($_POST["searchButton"])) {
+
+            header('Location: allSignaturesSearch.php');
+        }
 
         if(isset($_POST["editButton"])) {
 

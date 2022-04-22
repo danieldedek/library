@@ -2,9 +2,9 @@
 
 class ResetRequest extends DatabaseHandler {
 
-    protected function checkMail($pwdReserMail) {
+    protected function checkMail($pwdResetMail) {
         $stmt = $this->connect()->prepare('SELECT mail FROM user WHERE mail = ?;');
-        if(!$stmt->execute(array($pwdReserMail))) {
+        if(!$stmt->execute(array($pwdResetMail))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
@@ -15,18 +15,18 @@ class ResetRequest extends DatabaseHandler {
         return true;
     }
 
-    protected function delResetRequest($pwdReserMail) {
+    protected function delResetRequest($pwdResetMail) {
         $stmt = $this->connect()->prepare('DELETE FROM pwdReset WHERE pwdResetMail = ?;');
-        if(!$stmt->execute(array($pwdReserMail))) {
+        if(!$stmt->execute(array($pwdResetMail))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();
         }
     }
 
-    protected function setResetRequest($pwdReserMail, $pwdResetSelector, $pwdResetToken, $pwdResetExpires) {
+    protected function setResetRequest($pwdResetMail, $pwdResetSelector, $pwdResetToken, $pwdResetExpires) {
         $stmt = $this->connect()->prepare('INSERT INTO pwdReset(pwdResetMail, pwdResetSelector, pwdResetToken, pwdResetExpires) VALUES (?, ?, ?, ?);');
-        if(!$stmt->execute(array($pwdReserMail, $pwdResetSelector, $pwdResetToken, $pwdResetExpires))) {
+        if(!$stmt->execute(array($pwdResetMail, $pwdResetSelector, $pwdResetToken, $pwdResetExpires))) {
             $stmt = null;
             echo '<div class="wrapper"><p>stmt failed</p></div>';
             exit();

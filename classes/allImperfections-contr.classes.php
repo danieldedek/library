@@ -2,11 +2,14 @@
 
 class AllImperfectionsContr extends AllImperfections {
 
-    public function __construct() {
+    private $sort;
+
+    public function __construct($sort) {
+        $this->sort = $sort;
     }
 
     public function showAllImperfections() {
-        $this->getAllImperfections();
+        $this->getAllImperfections($this->sort);
     }
 }
 ?>

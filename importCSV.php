@@ -4,7 +4,7 @@ include "./header.php";
 
 <div class="wrapper">
    <div class="title">
-      Upravit vydavatele
+      Import knih ze souboru CSV
    </div>
    <?php
    if(isset($_SESSION['user'])) {

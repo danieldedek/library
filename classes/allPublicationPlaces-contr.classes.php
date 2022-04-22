@@ -2,11 +2,14 @@
 
 class AllPublicationPlacesContr extends AllPublicationPlaces {
 
-    public function __construct() {
+    private $sort;
+
+    public function __construct($sort) {
+        $this->sort = $sort;
     }
 
     public function showAllPublicationPlaces() {
-        $this->getAllPublicationPlaces();
+        $this->getAllPublicationPlaces($this->sort);
     }
 }
 ?>

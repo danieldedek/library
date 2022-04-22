@@ -2,13 +2,13 @@
 
 class ResetRequestContr extends ResetRequest {
     
-    private $pwdReserMail;
+    private $pwdResetMail;
     private $pwdResetSelector;
     private $pwdResetToken;
     private $pwdResetExpires;
 
-    public function __construct($pwdReserMail, $pwdResetSelector, $pwdResetToken, $pwdResetExpires) {
-        $this->pwdReserMail = $pwdReserMail;
+    public function __construct($pwdResetMail, $pwdResetSelector, $pwdResetToken, $pwdResetExpires) {
+        $this->pwdResetMail = $pwdResetMail;
         $this->pwdResetSelector = $pwdResetSelector;
         $this->pwdResetToken = $pwdResetToken;
         $this->pwdResetExpires = $pwdResetExpires;
@@ -20,7 +20,7 @@ class ResetRequestContr extends ResetRequest {
             echo '<div class="wrapper"><p>Uživatel s tímto mailem neexistuje</p></div>';
             return;
         }
-        $this->setResetRequest($this->pwdReserMail, $this->pwdResetSelector, $this->pwdResetToken, $this->pwdResetExpires);
+        $this->setResetRequest($this->pwdResetMail, $this->pwdResetSelector, $this->pwdResetToken, $this->pwdResetExpires);
     }
 
     public function deleteResetRequest() {
@@ -28,11 +28,11 @@ class ResetRequestContr extends ResetRequest {
             echo '<div class="wrapper"><p>Uživatel s tímto mailem neexistuje</p></div>';
             return;
         }
-        $this->delResetRequest($this->pwdReserMail);
+        $this->delResetRequest($this->pwdResetMail);
     }
 
     private function mailDoesNotExist() {
-        if(!$this->checkMail($this->pwdReserMail))
+        if(!$this->checkMail($this->pwdResetMail))
             return false;
         return true;
     }

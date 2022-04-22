@@ -2,11 +2,16 @@
 
 class AllBorrowingsContr extends AllBorrowings {
 
-    public function __construct() {
+    private $order;
+    private $sort;
+
+    public function __construct($order, $sort) {
+        $this->order = $order;
+        $this->sort = $sort;
     }
 
     public function showAllBorrowings() {
-        $this->getAllBorrowings();
+        $this->getAllBorrowings($this->order, $this->sort);
     }
 }
 ?>

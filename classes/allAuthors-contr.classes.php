@@ -2,11 +2,14 @@
 
 class AllAuthorsContr extends AllAuthors {
 
-    public function __construct() {
+    private $sort;
+
+    public function __construct($sort) {
+        $this->sort = $sort;
     }
 
     public function showAllAuthors() {
-        $this->getAllAuthors();
+        $this->getAllAuthors($this->sort);
     }
 }
 ?>

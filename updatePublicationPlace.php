@@ -4,7 +4,7 @@ include "./header.php";
 
 <div class="wrapper">
    <div class="title">
-      Upravit místo vydání
+      Úprava místa vydání
    </div>
    <?php
    if(isset($_SESSION['user'])) {

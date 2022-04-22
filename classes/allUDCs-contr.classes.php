@@ -2,11 +2,14 @@
 
 class AllUDCsContr extends AllUDCs {
 
-    public function __construct() {
+    private $sort;
+
+    public function __construct($sort) {
+        $this->sort = $sort;
     }
 
     public function showAllUDCs() {
-        $this->getAllUDCs();
+        $this->getAllUDCs($this->sort);
     }
 }
 ?>

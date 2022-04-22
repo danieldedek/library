@@ -12,7 +12,7 @@ class ResetPassword extends DatabaseHandler {
 
         if($stmt->rowCount() == 0) {
             $stmt = null;
-            echo '<div class="wrapper"><p>Časový limit pro obnovení hesla vypršel, zažádejte znovu</p></div>';
+            echo '<div class="wrapper"><p>Časový limit pro obnovení hesla vypršel, nebo nejste registrovaný</p></div>';
             exit();
         }
 
@@ -22,7 +22,7 @@ class ResetPassword extends DatabaseHandler {
         $tokenCheck = password_verify($tokenBin, $dbToken[0]["pwdResetToken"]);
 
         if($tokenCheck === false) {
-            echo '<div class="wrapper"><p>Časový limit pro obnovení hesla vypršel, zažádejte znovu</p></div>';
+            echo '<div class="wrapper"><p>Časový limit pro obnovení hesla vypršel, nebo nejste registrovaný</p></div>';
             exit();
         }
 

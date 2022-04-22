@@ -12,6 +12,9 @@ include "./header.php";
    }
    else
       echo "<p>Pro zobrazení obsahu této stránky se musíte přihlásit</p>";
+   ?>
+</div>
 
+<?php
 include "./footer.php";
 ?>

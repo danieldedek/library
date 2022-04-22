@@ -20,7 +20,7 @@ class AddUserContr extends AddUser {
 
     public function addUser() {
         if($this->invalidFirstName() == false)
-            array_push($this->wrongInputs, "Křesní jméno musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
+            array_push($this->wrongInputs, "Křestní jméno musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
         if($this->invalidLastName() == false)
             array_push($this->wrongInputs, "Příjmení musí vždy začínat velkým písmenem a může obsahovat maximálně dvě slova, která jsou oddělená jednou mezerou");
         if($this->invalidMail() == false)

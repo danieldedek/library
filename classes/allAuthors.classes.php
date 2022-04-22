@@ -2,9 +2,9 @@
 
 class AllAuthors extends DatabaseHandler {
 
-    protected function getAllAuthors() {
+    protected function getAllAuthors($sort) {
 
-        $stmt = $this->connect()->prepare('SELECT id_author, name FROM author;');
+        $stmt = $this->connect()->prepare('SELECT id_author, name FROM author ORDER BY name ' . $sort .  ';');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -18,16 +18,16 @@ class AllAuthors extends DatabaseHandler {
             return;
         }
 
-        $pagesCount = ceil($stmt->rowCount()/2);
+        $pagesCount = ceil($stmt->rowCount()/50);
 
         if(!isset($_GET['page']))
             $page = 1;
         else
             $page = $_GET['page'];
 
-        $thisPageFirstResult = ($page-1)*2;
+        $thisPageFirstResult = ($page-1)*50;
 
-        $stmt = $this->connect()->prepare('SELECT id_author, name FROM author LIMIT ' . $thisPageFirstResult .  ',2;');
+        $stmt = $this->connect()->prepare('SELECT id_author, name FROM author ORDER BY name ' . $sort .  ' LIMIT ' . $thisPageFirstResult .  ',50;');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -38,8 +38,14 @@ class AllAuthors extends DatabaseHandler {
         $authors = array();
 
         $dbAllauthors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if($sort == 'DESC')
+            $sort = 'ASC';
+        else 
+            $sort = 'DESC';
+
         echo("<table>");
-        echo("<tr><th>Jméno autora</th></tr>");
+        echo('<tr><th><a href="allAuthors.php?sort=' . $sort . '">Jméno autora</a></th><th><form method="POST"><button type="submit" name="searchButton" class="button">Vyhledat</button></form></th></tr>');
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
             array_push($authors, $dbAllauthors[$i]["id_author"]);
             echo("<tr><td>" . $dbAllauthors[$i]["name"] . '</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td>');
@@ -48,15 +54,20 @@ class AllAuthors extends DatabaseHandler {
             else
                 echo('<td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
         }
-        echo("</table>");
+        echo("</table><br />");
 
         for ($page = 1; $page <= $pagesCount; $page++) {
-            echo('<a href="allAuthors.php?page=' . $page . '">' . $page . '</a>');
+            echo('<a href="allAuthors.php?page=' . $page . '" class="page">' . $page . '</a>');
         }
 
         echo("</div>");
 
         $stmt = null;
+
+        if(isset($_POST["searchButton"])) {
+
+            header('Location: allAuthorsSearch.php');
+        }
 
         if(isset($_POST["editButton"])) {
 

@@ -4,7 +4,7 @@ include "./header.php";
 
 <div class="wrapper">
    <div class="title">
-      Upravit mezinárodní desetinné třídění
+      Úprava mezinárodního desetinného třídění
    </div>
    <?php
    if(isset($_SESSION['user'])) {

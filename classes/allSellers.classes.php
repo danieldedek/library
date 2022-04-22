@@ -2,9 +2,9 @@
 
 class AllSellers extends DatabaseHandler {
 
-    protected function getAllSellers() {
+    protected function getAllSellers($sort) {
 
-        $stmt = $this->connect()->prepare('SELECT id_seller, name FROM seller;');
+        $stmt = $this->connect()->prepare('SELECT id_seller, name FROM seller ORDER BY name ' . $sort .  ';');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -18,16 +18,16 @@ class AllSellers extends DatabaseHandler {
             return;
         }
 
-        $pagesCount = ceil($stmt->rowCount()/2);
+        $pagesCount = ceil($stmt->rowCount()/50);
 
         if(!isset($_GET['page']))
             $page = 1;
         else
             $page = $_GET['page'];
 
-        $thisPageFirstResult = ($page-1)*2;
+        $thisPageFirstResult = ($page-1)*50;
 
-        $stmt = $this->connect()->prepare('SELECT id_seller, name FROM seller LIMIT ' . $thisPageFirstResult .  ',2;');
+        $stmt = $this->connect()->prepare('SELECT id_seller, name FROM seller ORDER BY name ' . $sort .  ' LIMIT ' . $thisPageFirstResult .  ',50;');
 
         if(!$stmt->execute(array())) {
             $stmt = null;
@@ -38,25 +38,36 @@ class AllSellers extends DatabaseHandler {
         $sellers = array();
 
         $dbAllSellers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if($sort == 'DESC')
+            $sort = 'ASC';
+        else 
+            $sort = 'DESC';
+
         echo("<table>");
-        echo("<tr><th>Vydavatelství</th></tr>");
+        echo('<tr><th><a href="allSellers.php?sort=' . $sort . '">Prodejce</a></th><th><form method="POST"><button type="submit" name="searchButton" class="button">Vyhledat</button></form></th></tr>');
         for ($i = 0; $i < $stmt->rowCount(); $i++) {
-            array_push($sellers, $dbAllSellers[$i]["id_publisher"]);
+            array_push($sellers, $dbAllSellers[$i]["id_seller"]);
             echo("<tr><td>" . $dbAllSellers[$i]["name"] . '</td><td><form method="POST"><button type="submit" name="editButton" class="button" value="'.$i.'">Upravit</button></form></td>');
-            if($this->isUsed($dbAllSellers[$i]["id_publisher"]))
+            if($this->isUsed($dbAllSellers[$i]["id_seller"]))
                 echo('</tr>');
             else
                 echo('<td><form method="POST"><button type="submit" name="deleteButton" class="button" value="'.$i.'">Odstranit</button></form></td></tr>');
         }
-        echo("</table>");
+        echo("</table><br />");
 
         for ($page = 1; $page <= $pagesCount; $page++) {
-            echo('<a href="allSellers.php?page=' . $page . '">' . $page . '</a>');
+            echo('<a href="allSellers.php?page=' . $page . '" class="page">' . $page . '</a>');
         }
 
         echo("</div>");
 
         $stmt = null;
+
+        if(isset($_POST["searchButton"])) {
+
+            header('Location: allSellersSearch.php');
+        }
 
         if(isset($_POST["editButton"])) {
 

@@ -8,9 +8,10 @@
 
 body {
     background: #c9c9c9;
-    max-width: 1120px;
+    max-width: 1330px;
     margin: auto;
     padding: 0 10px;
+    text-align: center;
 }
 
 .wrapper {
@@ -20,6 +21,11 @@ body {
     padding: 70px;
     padding-left: 50px;
     padding-right: 50px;
+}
+
+.page{
+    color: #039dfc;
+    text-decoration: none;
 }
 
 .wrapper .title {
@@ -39,6 +45,7 @@ body {
 .wrapper .form .inputField label {
     width: 280px;
     margin-right: 10px;
+    color:#039dfc;
 }
 
 .wrapper .form .inputField .input {
@@ -72,6 +79,14 @@ body {
 
 .wrapper .form .inputField:last-child {
     margin-bottom: 0;
+}
+
+.controls a {
+    color: #039dfc;
+    text-decoration: none;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 30px;
 }
 
 header {
@@ -126,10 +141,42 @@ table {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+    border-collapse: collapse;
 }
 
 th, td{
-    padding: 0px 5px;
+    padding: 8px 15px;
+}
+
+th {
+    background-color: #039dfc;
+    color: #fff;
+}
+
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+td {
+    font-weight: normal;
+}
+
+th a {
+    color: #fff;
+    text-decoration: none;
+}
+
+td a {
+    color: #000;
+    text-decoration: none;
+}
+
+tr:nth-of-type(odd) {
+    background-color: #f3f3f3;
+}
+
+tr:last-of-type {
+    border-bottom: 2px solid #039dfc;
 }
 
 .dropdown {
